@@ -1,12 +1,12 @@
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
+// import { EnvVarWarning } from "@/components/env-var-warning";
+// import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { Button } from "@/components/ui/button";
 import { hasEnvVars } from "@/lib/utils";
 import { FileText, PieChart, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
-import { DeployButton } from "@/components/deploy-button";
+// import { Suspense } from "react";
+// import { DeployButton } from "@/components/deploy-button";
 
 const features = [
   {
@@ -38,16 +38,13 @@ export default function Home() {
             <Link href={"/"} className="font-semibold">
               Control de Retenciones
             </Link>
-            {!hasEnvVars ? (
+            {/* {!hasEnvVars ? (
               <EnvVarWarning />
             ) : (
               <Suspense>
                 <AuthButton />
               </Suspense>
-            )}
-
-            Deployed on{" "}
-            <DeployButton />
+            )} */}
             <ThemeSwitcher />
           </div>
         </nav>

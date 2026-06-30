@@ -6,6 +6,10 @@ async function ValidateAuth() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
 
+  console.log({
+    data, error
+  })
+
   if (error || !data?.claims) {
     redirect("/auth/login");
   }

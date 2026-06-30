@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { deleteCai } from "./actions";
+import { Suspense } from "react";
 
 type CaiRecord = {
   id: string;
@@ -41,7 +42,7 @@ function formatDate(value: string | null) {
   });
 }
 
-export default async function CaiPage() {
+const CaiTable = async () => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("cais")
@@ -52,22 +53,7 @@ export default async function CaiPage() {
   const cais = (data ?? []) as CaiRecord[];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">CAI</h1>
-          <p className="text-sm text-foreground/60">
-            Códigos de autorización de impresión registrados.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/dashboard/cai/nuevo">
-            <Plus className="size-4" />
-            Nuevo CAI
-          </Link>
-        </Button>
-      </div>
-
+    <>
       {error ? (
         <p className="rounded-md border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
           No se pudo cargar la lista de CAIs: {error.message}
@@ -138,6 +124,35 @@ export default async function CaiPage() {
           </table>
         </div>
       )}
+    </>
+  );
+};
+
+export default function CaiPage() {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">CAI</h1>
+          <p className="text-sm text-foreground/60">
+            Códigos de autorización de impresión registrados.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/dashboard/cai/nuevo">
+            <Plus className="size-4" />
+            Nuevo CAI
+          </Link>
+        </Button>
+      </div>
+
+      <Suspense fallback={
+        <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+          Cargando CAIs…
+        </div>
+      }>
+        <CaiTable />
+      </Suspense>
     </div>
   );
 }

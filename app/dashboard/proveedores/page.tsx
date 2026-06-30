@@ -20,7 +20,7 @@ type Distributor = {
 const selectClass =
   "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
 
-const ProveedoresTable = async ({
+const ProveedoresContent = async ({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string; status?: string }>;
@@ -42,6 +42,31 @@ const ProveedoresTable = async ({
 
   return (
     <>
+      <form className="flex flex-wrap items-end gap-3">
+        <div className="relative flex-1 min-w-50">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/40" />
+          <Input
+            name="q"
+            defaultValue={q}
+            placeholder="Buscar por nombre…"
+            className="pl-9"
+          />
+        </div>
+        <select name="status" defaultValue={status} className={`${selectClass} w-40`}>
+          <option value="">Todos los estados</option>
+          <option value="activo">activo</option>
+          <option value="inactivo">inactivo</option>
+        </select>
+        <Button type="submit" variant="secondary">
+          Filtrar
+        </Button>
+        {(q || status) && (
+          <Button asChild variant="ghost">
+            <Link href="/dashboard/proveedores">Limpiar</Link>
+          </Button>
+        )}
+      </form>
+
       {error ? (
         <p className="rounded-md border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
           No se pudo cargar la lista: {error.message}
@@ -100,13 +125,11 @@ const ProveedoresTable = async ({
   )
 };
 
-export default async function ProveedoresPage({
+export default function ProveedoresPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string; status?: string }>;
 }) {
-  const { q = "", status = "" } = await searchParams;
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -124,37 +147,12 @@ export default async function ProveedoresPage({
         </Button>
       </div>
 
-      <form className="flex flex-wrap items-end gap-3">
-        <div className="relative flex-1 min-w-50">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/40" />
-          <Input
-            name="q"
-            defaultValue={q}
-            placeholder="Buscar por nombre…"
-            className="pl-9"
-          />
-        </div>
-        <select name="status" defaultValue={status} className={`${selectClass} w-40`}>
-          <option value="">Todos los estados</option>
-          <option value="activo">activo</option>
-          <option value="inactivo">inactivo</option>
-        </select>
-        <Button type="submit" variant="secondary">
-          Filtrar
-        </Button>
-        {(q || status) && (
-          <Button asChild variant="ghost">
-            <Link href="/dashboard/proveedores">Limpiar</Link>
-          </Button>
-        )}
-      </form>
-
       <Suspense fallback={
         <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
           Cargando proveedores…
         </div>
       }>
-        <ProveedoresTable searchParams={searchParams} />
+        <ProveedoresContent searchParams={searchParams} />
       </Suspense>
     </div>
   );

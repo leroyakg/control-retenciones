@@ -87,19 +87,6 @@ const NuevoCaiForm = async () => {
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="company_id">Empresa</Label>
-          <select id="company_id" name="company_id" required className={selectClass} defaultValue="">
-            <option value="" disabled>
-              Seleccionar empresa
-            </option>
-            {(companies.data ?? []).map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col gap-2">
           <Label htmlFor="merchant_id">Negocio</Label>
           <select id="merchant_id" name="merchant_id" required className={selectClass} defaultValue="">
             <option value="" disabled>
@@ -108,22 +95,6 @@ const NuevoCaiForm = async () => {
             {(merchants.data ?? []).map((m) => (
               <option key={m.id} value={m.id}>
                 {m.nickname}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="distributor_id">Imprenta</Label>
-          <select id="distributor_id" name="distributor_id" required className={selectClass} defaultValue="">
-            <option value="" disabled>
-              Seleccionar distribuidor
-            </option>
-            {(distributors.data ?? []).map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.nickname}
               </option>
             ))}
           </select>
@@ -138,7 +109,25 @@ const NuevoCaiForm = async () => {
             ))}
           </select>
         </div>
+
       </div>
+
+      {/* <div className="grid gap-5 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="distributor_id">Imprenta</Label>
+          <select id="distributor_id" name="distributor_id" required className={selectClass} defaultValue="">
+            <option value="" disabled>
+              Seleccionar distribuidor
+            </option>
+            {(distributors.data ?? []).map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.nickname}
+              </option>
+            ))}
+          </select>
+        </div>
+
+      </div> */}
 
       <div className="flex gap-3 pt-2">
         <Button type="submit">Guardar</Button>

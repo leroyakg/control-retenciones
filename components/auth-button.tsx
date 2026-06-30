@@ -12,9 +12,14 @@ export async function AuthButton() {
 
   if (!user) {
     return (
-      <Button asChild size="lg" variant="outline">
-        <Link href="/auth/login">Iniciar sesión</Link>
-      </Button>
+      <>
+        <Button asChild size="lg" variant="outline">
+          <Link href="/auth/login">Iniciar sesión</Link>
+        </Button>
+        <Button asChild size="lg" variant="default">
+          <Link href="/auth/sign-up">Registrarse</Link>
+        </Button>
+      </>
     );
   }
 

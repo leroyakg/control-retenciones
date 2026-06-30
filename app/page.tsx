@@ -1,11 +1,10 @@
 // import { EnvVarWarning } from "@/components/env-var-warning";
-// import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { Button } from "@/components/ui/button";
-import { hasEnvVars } from "@/lib/utils";
+// import { hasEnvVars } from "@/lib/utils";
 import { FileText, PieChart, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-// import { Suspense } from "react";
+import { Suspense } from "react";
+import { AuthButton } from "@/components/auth-button";
 // import { DeployButton } from "@/components/deploy-button";
 
 const features = [
@@ -62,14 +61,9 @@ export default function Home() {
               forma simple. Sin planillas dispersas ni cálculos a mano.
             </p>
             <div className="flex gap-3 mt-2">
-              <Button asChild size="lg">
-                <Link href="/dashboard">Ir al panel</Link>
-              </Button>
-              {!hasEnvVars ? null : (
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/auth/login">Iniciar sesión</Link>
-                </Button>
-              )}
+              <Suspense>
+                <AuthButton />
+              </Suspense>
             </div>
           </section>
 

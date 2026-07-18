@@ -3,14 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { Store, Truck, ReceiptText, AlertTriangle } from "lucide-react";
 
-const currency = new Intl.NumberFormat("es-HN", {
-  style: "currency",
-  currency: "HNL",
-  minimumFractionDigits: 2,
-});
+// const currency = new Intl.NumberFormat("es-HN", {
+//   style: "currency",
+//   currency: "HNL",
+//   minimumFractionDigits: 2,
+// });
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -23,13 +23,12 @@ function formatDate(value: string | null) {
 
 type RetencionRow = {
   id: string;
-  retencion_id: string;
-  no_factura: string;
-  date: string | null;
-  amount: number;
-  retain_amount: number;
-  created_at: string;
-  merchant: { nickname: string } | null;
+  rtn: string;
+  cai: string;
+  fecha_documento: string;
+  fecha_emision: string;
+  proveedor: string | null;
+  correlativo: string | null;
 };
 
 const StatCard = ({
@@ -77,16 +76,8 @@ const SummaryCards = async () => {
   const todayStr = today.toISOString().slice(0, 10);
   const soonStr = soon.toISOString().slice(0, 10);
 
-  const [merchants, distributors, retenciones, caisPorVencer] =
+  const [retenciones, caisPorVencer] =
     await Promise.all([
-      supabase
-        .from("merchant")
-        .select("*", { count: "exact", head: true })
-        .or("soft_delete.is.null,soft_delete.eq.0"),
-      supabase
-        .from("distributor")
-        .select("*", { count: "exact", head: true })
-        .or("soft_delete.is.null,soft_delete.eq.0"),
       supabase
         .from("retenciones")
         .select("*", { count: "exact", head: true })
@@ -101,21 +92,7 @@ const SummaryCards = async () => {
     ]);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <StatCard
-        title="Negocios"
-        value={merchants.count ?? 0}
-        hint="Negocios registrados"
-        icon={<Store className="size-4" />}
-        href="/dashboard/empresas"
-      />
-      <StatCard
-        title="Proveedores"
-        value={distributors.count ?? 0}
-        hint="Distribuidores e imprentas"
-        icon={<Truck className="size-4" />}
-        href="/dashboard/proveedores"
-      />
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
       <StatCard
         title="Retenciones activas"
         value={retenciones.count ?? 0}
@@ -139,11 +116,11 @@ const RetencionesHistoric = async () => {
   const { data, error } = await supabase
     .from("retenciones")
     .select(
-      "id, retencion_id, no_factura, date, amount, retain_amount, created_at, merchant:merchant_id(nickname)",
+      "id, rtn, cai, fecha_documento, fecha_emision, proveedor, correlativo",
     )
-    .is("deleted_at", null)
-    .order("date", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false })
+    // .is("deleted_at", null)
+    .order("fecha_documento", { ascending: false, nullsFirst: false })
+    .order("fecha_emision", { ascending: false })
     .limit(25);
 
   const retenciones = (data ?? []) as unknown as RetencionRow[];
@@ -181,21 +158,16 @@ const RetencionesHistoric = async () => {
                     key={r.id}
                     className="border-b border-foreground/5 last:border-0 hover:bg-accent/40"
                   >
-                    <td className="p-3 font-mono text-xs">{r.retencion_id}</td>
-                    <td className="p-3">{r.merchant?.nickname ?? "—"}</td>
+                    <td className="p-3 font-mono text-xs">{r.id}</td>
+                    <td className="p-3">{r.proveedor ?? "—"}</td>
                     <td className="p-3 font-mono text-xs text-foreground/70">
-                      {r.no_factura}
+                      {r.correlativo}
                     </td>
                     <td className="p-3 text-foreground/70">
-                      {formatDate(r.date)}
+                      {formatDate(r.fecha_documento)}
                     </td>
-                    <td className="p-3 text-right tabular-nums">
-                      {currency.format(r.amount)}
-                    </td>
-                    <td className="p-3 text-right tabular-nums">
-                      <Badge variant="secondary">
-                        {currency.format(r.retain_amount)}
-                      </Badge>
+                    <td className="p-3 text-foreground/70">
+                      {formatDate(r.fecha_emision)}
                     </td>
                   </tr>
                 ))}
@@ -209,8 +181,8 @@ const RetencionesHistoric = async () => {
 };
 
 const cardsFallback = (
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    {Array.from({ length: 4 }).map((_, i) => (
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+    {Array.from({ length: 2 }).map((_, i) => (
       <Card key={i}>
         <CardContent className="p-6">
           <div className="h-4 w-24 animate-pulse rounded bg-foreground/10" />

@@ -3,25 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Bell,
   BarChart3,
-  Building2,
-  FilePlus,
-  History,
   Home,
   ScrollText,
-  Truck,
+  ReceiptText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", label: "Inicio", icon: Home },
-  { href: "/dashboard/nueva", label: "Nueva Retención", icon: FilePlus },
-  { href: "/dashboard/historial", label: "Historial", icon: History },
+  // { href: "/dashboard/nueva", label: "Nueva Retención", icon: FilePlus },
+  // { href: "/dashboard/historial", label: "Historial", icon: History },
+  { href: "/dashboard/retenciones", label: "Retenciones", icon: ReceiptText },
   { href: "/dashboard/cai", label: "CAI", icon: ScrollText },
-  { href: "/dashboard/empresas", label: "Empresas", icon: Building2 },
-  { href: "/dashboard/proveedores", label: "Proveedores", icon: Truck },
-  { href: "/dashboard/alertas", label: "Alertas", icon: Bell },
   { href: "/dashboard/reportes", label: "Reportes", icon: BarChart3 },
 ];
 

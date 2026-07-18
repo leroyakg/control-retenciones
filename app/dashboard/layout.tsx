@@ -2,6 +2,7 @@ import { DashboardNav } from "@/components/dashboard-nav";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { LogoutButton } from "@/components/logout-button";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function DashboardLayout({
   children,
@@ -15,7 +16,9 @@ export default function DashboardLayout({
           Control de Retenciones
         </Link>
         <div className="mt-6 flex-1">
-          <DashboardNav />
+          <Suspense fallback={null}>
+            <DashboardNav />
+          </Suspense>
         </div>
         <div className="flex-1 items-center justify-between gap-2 border-t border-foreground/10 pt-4">
           <ThemeSwitcher />

@@ -5,26 +5,10 @@ import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { deleteCai } from "./actions";
 import { Suspense } from "react";
-
-type CaiRecord = {
-  id: string;
-  cai_id: string;
-  distributor_id: string;
-  bloque: string | null;
-  merchant_id: string;
-  company_id: string;
-  start_from: string;
-  end_from: string;
-  emission_date: string;
-  expiration_date: string;
-  status: "activo" | "vencido" | "agotado" | "anulado";
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-};
+import type { CaiEstatus, CaiRecord } from "./types";
 
 const statusVariant: Record<
-  CaiRecord["status"],
+  CaiEstatus,
   "default" | "secondary" | "destructive" | "outline"
 > = {
   activo: "default",
@@ -42,13 +26,19 @@ function formatDate(value: string | null) {
   });
 }
 
+function formatRange(cai: CaiRecord) {
+  const inicio = cai.rango_inicial?.toLocaleString("es-HN") ?? "—";
+  const final = cai.rango_final?.toLocaleString("es-HN") ?? "—";
+  return `${inicio} – ${final}`;
+}
+
 const CaiTable = async () => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("cais")
     .select("*")
-    .is("deleted_at", null)
-    .order("created_at", { ascending: false });
+    .is("delete_time", null)
+    .order("create_time", { ascending: false });
 
   const cais = (data ?? []) as CaiRecord[];
 
@@ -69,7 +59,9 @@ const CaiTable = async () => {
               <tr>
                 <th className="p-3 font-medium">Bloque</th>
                 <th className="p-3 font-medium">CAI</th>
+                <th className="p-3 font-medium">Prefijo</th>
                 <th className="p-3 font-medium">Rango</th>
+                <th className="p-3 font-medium">Emisión</th>
                 <th className="p-3 font-medium">Vencimiento</th>
                 <th className="p-3 font-medium">Estado</th>
                 <th className="p-3 font-medium text-right">Acciones</th>
@@ -82,14 +74,18 @@ const CaiTable = async () => {
                   className="border-b border-foreground/5 last:border-0 hover:bg-accent/40"
                 >
                   <td className="p-3 font-medium">{cai.bloque ?? "—"}</td>
-                  <td className="p-3 font-mono text-xs">{cai.cai_id}</td>
-                  <td className="p-3 text-xs text-foreground/70">
-                    {cai.start_from} – {cai.end_from}
+                  <td className="p-3 font-mono text-xs">{cai.cai}</td>
+                  <td className="p-3 font-mono text-xs text-foreground/70">
+                    {cai.prefijo ?? "—"}
                   </td>
-                  <td className="p-3">{formatDate(cai.expiration_date)}</td>
+                  <td className="p-3 text-xs text-foreground/70">
+                    {formatRange(cai)}
+                  </td>
+                  <td className="p-3">{formatDate(cai.fecha_emision)}</td>
+                  <td className="p-3">{formatDate(cai.fecha_expiracion)}</td>
                   <td className="p-3">
-                    <Badge variant={statusVariant[cai.status] ?? "secondary"}>
-                      {cai.status}
+                    <Badge variant={statusVariant[cai.estatus] ?? "secondary"}>
+                      {cai.estatus}
                     </Badge>
                   </td>
                   <td className="p-3">

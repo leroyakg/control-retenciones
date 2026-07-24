@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { AutoPrint, PrintButton } from "./auto-print";
 import type { RetencionDetalleRecord, RetencionRecord } from "@/app/dashboard/retenciones/types";
+import logo from "@/img/icon_no_background.png";
 
 const currency = new Intl.NumberFormat("es-HN", {
   style: "currency",
@@ -78,11 +80,36 @@ const ReciboRetencion = async ({
         <PrintButton />
       </div>
 
+
+
       <div className="mx-auto flex max-w-2xl flex-col gap-6 rounded-md border border-foreground/10 p-8 print:border-0 print:p-0">
-        <header className="flex flex-col items-center gap-1 border-b border-foreground/10 pb-4 text-center">
-          <h1 className="text-xl font-semibold">Constancia de Retención</h1>
-          <p className="text-sm text-foreground/60">Control de Retenciones</p>
+        <header className="flex flex-col items-center gap-2 border-b border-foreground/10 pb-4 text-center">
+          <Image
+            src={logo}
+            alt="La Casa del Panadero"
+            width={64}
+            height={68}
+            className="mb-1"
+          />
+          <h1 className="text-xl font-bold underline underline-offset-2">
+            La Casa del Panadero S. de R.L.
+          </h1>
+          <p className="text-xs leading-snug text-foreground/70">
+            Bo. Abajo, 2da Ave. 2-3 Calle, atrás del edificio antiguo de Aguas
+            de Siguatepeque,
+            <br />
+            Siguatepeque, Comayagua, Honduras, C.A.
+            <br />
+            R.T.N. 08019009225129 &nbsp; Cel: 9595-4000
+            <br />
+            E-mail: administracion@lacasadelpanadero.com
+          </p>
+          <h2 className="mt-2 text-base font-semibold">
+            Constancia de Retención
+          </h2>
         </header>
+
+
 
         <section className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div>

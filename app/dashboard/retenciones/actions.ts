@@ -11,10 +11,8 @@ function parseNumber(value: FormDataEntryValue | null): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
-export async function createRetencion(formData: FormData) {
+function buildMaster(formData: FormData) {
   const text = (key: string) => (formData.get(key) as string)?.trim() || null;
-
-  const now = new Date().toISOString();
 
   const master = {
     rtn: text("rtn"),
@@ -24,14 +22,16 @@ export async function createRetencion(formData: FormData) {
     fecha_documento: text("fecha_documento"),
     fecha_emision: text("fecha_emision"),
     firma: text("firma"),
-    create_time: now,
-    update_time: now,
   };
 
   if (!master.proveedor || !master.rtn || !master.cai) {
     throw new Error("Proveedor, RTN y CAI son obligatorios.");
   }
 
+  return master;
+}
+
+function buildDetalles(formData: FormData) {
   // Detail rows come as parallel arrays (repeated field names).
   const descripciones = formData.getAll("descripcion");
   const bases = formData.getAll("det_base_imponible");
@@ -54,11 +54,19 @@ export async function createRetencion(formData: FormData) {
     throw new Error("Agregá al menos un registro de detalle.");
   }
 
+  return detalles;
+}
+
+export async function createRetencion(formData: FormData) {
+  const now = new Date().toISOString();
+  const master = buildMaster(formData);
+  const detalles = buildDetalles(formData);
+
   const supabase = await createClient();
 
   const { data: created, error } = await supabase
     .from("retenciones")
-    .insert(master)
+    .insert({ ...master, create_time: now, update_time: now })
     .select("id")
     .single();
 
@@ -99,7 +107,12 @@ export async function createRetencion(formData: FormData) {
   // incrementar el correlativo_actual del CAI utilizado
   const { error: updateCaiError } = await supabase
     .from("cais")
-    .update({ correlativo_actual: caiData.correlativo_actual !== null ? caiData.correlativo_actual + 1 : 0 })
+    .update({
+      correlativo_actual:
+        caiData.correlativo_actual !== null
+          ? caiData.correlativo_actual + 1
+          : 0,
+    })
     .eq("id", caiData.id);
 
   if (updateCaiError) {
@@ -108,4 +121,77 @@ export async function createRetencion(formData: FormData) {
 
   revalidatePath("/dashboard/retenciones");
   redirect("/dashboard/retenciones");
+}
+
+export async function updateRetencion(id: number, formData: FormData) {
+  const now = new Date().toISOString();
+  const master = buildMaster(formData);
+  const detalles = buildDetalles(formData);
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("retenciones")
+    .update({ ...master, update_time: now })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Replace the detail rows wholesale — simpler and safe at this scale.
+  const { error: delError } = await supabase
+    .from("retenciones_detalle")
+    .delete()
+    .eq("retencion_id", id);
+
+  if (delError) {
+    throw new Error(delError.message);
+  }
+
+  const detallePayload = detalles.map((d) => ({
+    retencion_id: id,
+    descripcion: d.descripcion,
+    base_imponible: d.base_imponible ?? 0,
+    importe_total: d.importe_total ?? 0,
+    create_time: now,
+    update_time: now,
+  }));
+
+  const { error: detError } = await supabase
+    .from("retenciones_detalle")
+    .insert(detallePayload);
+
+  if (detError) {
+    throw new Error(detError.message);
+  }
+
+  revalidatePath("/dashboard/retenciones");
+  redirect("/dashboard/retenciones");
+}
+
+export async function deleteRetencion(formData: FormData) {
+  const id = formData.get("id") as string;
+  if (!id) return;
+
+  const supabase = await createClient();
+
+  // retenciones has no soft-delete column — remove the detail rows first,
+  // then the parent, so we never leave an orphaned detalle behind.
+  const { error: detError } = await supabase
+    .from("retenciones_detalle")
+    .delete()
+    .eq("retencion_id", id);
+
+  if (detError) {
+    throw new Error(detError.message);
+  }
+
+  const { error } = await supabase.from("retenciones").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/dashboard/retenciones");
 }

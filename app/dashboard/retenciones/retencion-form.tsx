@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
+import type { RetencionDetalleRecord, RetencionRecord } from "./types";
 
 const selectClass =
   "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
@@ -25,6 +26,9 @@ type CaiOption = {
 };
 
 const formatCorrelativo = (cai?: CaiOption) => {
+
+  console.log({ Cai: cai })
+
   if (!cai) return "";
   const seq = String(cai.correlativo_actual ?? 0).padStart(8, "0");
   return `${cai.prefijo}-${seq}`
@@ -58,18 +62,42 @@ const newRow = (): DetalleRow => ({
   importe_total: "",
 });
 
+const rowFromDetalle = (d: RetencionDetalleRecord): DetalleRow => {
+  const concepto = CONCEPTOS.find((c) => c.descripcion === d.descripcion);
+  return {
+    id: rowSeq++,
+    descripcion: d.descripcion ?? "",
+    porcentaje: concepto?.porcentaje ?? 0,
+    base_imponible: String(d.base_imponible ?? ""),
+    importe_total: String(d.importe_total ?? ""),
+  };
+};
+
 export function RetencionForm({
   action,
   cais,
+  retencion,
+  detalles,
+  submitLabel = "Guardar",
 }: {
   action: (formData: FormData) => void;
   cais: CaiOption[];
+  retencion?: RetencionRecord;
+  detalles?: RetencionDetalleRecord[];
+  submitLabel?: string;
 }) {
-  const [rows, setRows] = useState<DetalleRow[]>([newRow()]);
+  const [rows, setRows] = useState<DetalleRow[]>(() =>
+    detalles && detalles.length > 0 ? detalles.map(rowFromDetalle) : [newRow()],
+  );
 
-  // Preselect the most recent active CAI (first row of the query).
-  const [selectedCai, setSelectedCai] = useState(cais[0]?.cai ?? "");
-  const [correlativo, setCorrelativo] = useState(formatCorrelativo(cais[0]));
+  // Preselect the retención's own CAI when editing, otherwise the most
+  // recent active CAI (first row of the query).
+  const [selectedCai, setSelectedCai] = useState(
+    retencion?.cai ?? cais[0]?.cai ?? "",
+  );
+  const [correlativo, setCorrelativo] = useState(
+    retencion?.correlativo ?? formatCorrelativo(cais[0]),
+  );
 
   const onCaiChange = (value: string) => {
     setSelectedCai(value);
@@ -104,6 +132,7 @@ export function RetencionForm({
               id="proveedor"
               name="proveedor"
               placeholder="Nombre del proveedor"
+              defaultValue={retencion?.proveedor ?? ""}
               required
             />
           </div>
@@ -113,6 +142,7 @@ export function RetencionForm({
               id="rtn"
               name="rtn"
               placeholder="08011999123456"
+              defaultValue={retencion?.rtn ?? ""}
               required
             />
           </div>
@@ -120,7 +150,7 @@ export function RetencionForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="cai">CAI</Label>
+            <Label htmlFor="cai">Bloque</Label>
             <select
               id="cai"
               name="cai"
@@ -130,7 +160,7 @@ export function RetencionForm({
               onChange={(e) => onCaiChange(e.target.value)}
             >
               <option value="" disabled>
-                Seleccionar CAI
+                Seleccionar ...
               </option>
               {cais.map((c) => (
                 <option key={c.id} value={c.cai}>
@@ -159,6 +189,7 @@ export function RetencionForm({
               id="fecha_documento"
               name="fecha_documento"
               type="date"
+              defaultValue={retencion?.fecha_documento?.slice(0, 10) ?? ""}
               required
             />
           </div>
@@ -168,6 +199,7 @@ export function RetencionForm({
               id="fecha_emision"
               name="fecha_emision"
               type="date"
+              defaultValue={retencion?.fecha_emision?.slice(0, 10) ?? ""}
               required
             />
           </div>
@@ -176,7 +208,12 @@ export function RetencionForm({
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="firma">Firma</Label>
-            <Input id="firma" name="firma" placeholder="Firma autorizada" />
+            <Input
+              id="firma"
+              name="firma"
+              placeholder="Firma autorizada"
+              defaultValue={retencion?.firma ?? ""}
+            />
           </div>
         </div>
       </section>
@@ -322,7 +359,7 @@ export function RetencionForm({
       </section>
 
       <div className="flex gap-3 pt-2">
-        <Button type="submit">Guardar</Button>
+        <Button type="submit">{submitLabel}</Button>
         <Button asChild variant="outline" type="button">
           <Link href="/dashboard/retenciones">Cancelar</Link>
         </Button>

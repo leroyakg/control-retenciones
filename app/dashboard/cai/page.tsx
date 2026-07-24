@@ -91,7 +91,7 @@ const CaiTable = async () => {
                   <td className="p-3">
                     <div className="flex items-center justify-end gap-1">
                       <Button asChild size="icon" variant="ghost" title="Ver">
-                        <Link href={`/dashboard/cai/${cai.id}`}>
+                        <Link href={`/dashboard/cai/${cai.id}/ver`}>
                           <Eye className="size-4" />
                         </Link>
                       </Button>

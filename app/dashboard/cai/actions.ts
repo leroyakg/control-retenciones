@@ -33,8 +33,14 @@ function buildPayload(formData: FormData) {
 }
 
 export async function createCai(formData: FormData) {
+
+  const { rango_inicial, rango_final, ...rest } = buildPayload(formData);
+
   const payload = {
-    ...buildPayload(formData),
+    ...rest,
+    rango_inicial: rango_inicial ?? 0,
+    rango_final: rango_final ?? 0,
+    correlativo_actual: rango_inicial ?? 0,
     create_time: new Date().toISOString(),
     update_time: new Date().toISOString(),
   };

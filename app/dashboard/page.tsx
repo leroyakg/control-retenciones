@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
-import { Store, Truck, ReceiptText, AlertTriangle } from "lucide-react";
+import { ReceiptText, AlertTriangle } from "lucide-react";
 
 // const currency = new Intl.NumberFormat("es-HN", {
 //   style: "currency",

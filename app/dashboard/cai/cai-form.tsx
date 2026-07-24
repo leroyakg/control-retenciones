@@ -13,10 +13,12 @@ function toDateInput(value: string | null | undefined) {
 }
 
 export function CaiForm({
+  editMode,
   action,
   cai,
   submitLabel = "Guardar",
 }: {
+  editMode?: boolean;
   action: (formData: FormData) => void;
   cai?: CaiRecord;
   submitLabel?: string;
@@ -29,6 +31,7 @@ export function CaiForm({
           <Input
             id="cai"
             name="cai"
+            disabled={!editMode}
             placeholder="7F92-AB34-XX11"
             defaultValue={cai?.cai ?? ""}
             required
@@ -39,6 +42,7 @@ export function CaiForm({
           <Input
             id="bloque"
             name="bloque"
+            disabled={!editMode}
             placeholder="Retenciones 2026"
             defaultValue={cai?.bloque ?? ""}
           />
@@ -52,6 +56,7 @@ export function CaiForm({
             id="prefijo"
             name="prefijo"
             placeholder="000-001-01"
+            disabled={!editMode}
             defaultValue={cai?.prefijo ?? ""}
           />
         </div>
@@ -61,6 +66,7 @@ export function CaiForm({
             id="estatus"
             name="estatus"
             className={selectClass}
+            disabled={!editMode}
             defaultValue={cai?.estatus ?? "activo"}
           >
             {ESTATUS.map((s) => (
@@ -82,6 +88,7 @@ export function CaiForm({
             min={0}
             step={1}
             placeholder="1"
+            disabled={!editMode}
             defaultValue={cai?.rango_inicial ?? ""}
             required
           />
@@ -95,6 +102,7 @@ export function CaiForm({
             min={0}
             step={1}
             placeholder="500"
+            disabled={!editMode}
             defaultValue={cai?.rango_final ?? ""}
             required
           />
@@ -108,6 +116,7 @@ export function CaiForm({
             id="fecha_emision"
             name="fecha_emision"
             type="date"
+            disabled={!editMode}
             defaultValue={toDateInput(cai?.fecha_emision)}
             required
           />
@@ -118,6 +127,7 @@ export function CaiForm({
             id="fecha_expiracion"
             name="fecha_expiracion"
             type="date"
+            disabled={!editMode}
             defaultValue={toDateInput(cai?.fecha_expiracion)}
             required
           />
@@ -125,7 +135,8 @@ export function CaiForm({
       </div>
 
       <div className="flex gap-3 pt-2">
-        <Button type="submit">{submitLabel}</Button>
+
+        {editMode && <Button type="submit">{submitLabel}</Button>}
         <Button asChild variant="outline" type="button">
           <Link href="/dashboard/cai">Cancelar</Link>
         </Button>

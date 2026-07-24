@@ -8,7 +8,7 @@ import { updateCai } from "../../actions";
 import { CaiForm } from "../../cai-form";
 import type { CaiRecord } from "../../types";
 
-const EditarCaiForm = async ({
+const VerCaiForm = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -37,10 +37,10 @@ const EditarCaiForm = async ({
   const cai = data as CaiRecord;
   const action = updateCai.bind(null, cai.id);
 
-  return <CaiForm editMode={true} action={action} cai={cai} submitLabel="Actualizar" />;
+  return <CaiForm editMode={false} action={action} cai={cai} submitLabel="Actualizar" />;
 };
 
-export default function EditarCaiPage({
+export default function VerCaiPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -54,9 +54,9 @@ export default function EditarCaiPage({
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-semibold">Editar CAI</h1>
+          <h1 className="text-2xl font-semibold">Ver CAI</h1>
           <p className="text-sm text-foreground/60">
-            Actualizá los datos del bloque de autorización de impresión.
+            Consultá los datos del bloque de autorización de impresión.
           </p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function EditarCaiPage({
           </div>
         }
       >
-        <EditarCaiForm params={params} />
+        <VerCaiForm params={params} />
       </Suspense>
     </div>
   );

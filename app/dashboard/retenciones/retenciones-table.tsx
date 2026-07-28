@@ -136,11 +136,13 @@ export async function RetencionesTable({
                           <Printer className="size-4" />
                         </Link>
                       </Button>
-                      <Button asChild size="icon" variant="ghost" title="Editar">
-                        <Link href={`/dashboard/retenciones/${r.id}/editar`}>
-                          <Pencil className="size-4" />
-                        </Link>
-                      </Button>
+                      {!r.procesado && (
+                        <Button asChild size="icon" variant="ghost" title="Editar">
+                          <Link href={`/dashboard/retenciones/${r.id}/editar`}>
+                            <Pencil className="size-4" />
+                          </Link>
+                        </Button>
+                      )}
                       {/* <form action={deleteRetencion}>
                         <input type="hidden" name="id" value={r.id} />
                         <Button

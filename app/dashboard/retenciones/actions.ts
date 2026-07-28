@@ -172,6 +172,23 @@ export async function updateRetencion(id: number, formData: FormData) {
   redirect("/dashboard/retenciones");
 }
 
+export async function validarRetencion(id: number) {
+  const now = new Date().toISOString();
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("retenciones")
+    .update({ procesado: true, update_time: now })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath(`/imprimir/retenciones/${id}`);
+  revalidatePath("/dashboard/retenciones");
+}
+
 export async function deleteRetencion(formData: FormData) {
   const id = formData.get("id") as string;
   if (!id) return;

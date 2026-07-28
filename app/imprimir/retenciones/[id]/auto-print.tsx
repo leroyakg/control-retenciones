@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,16 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Printer } from "lucide-react";
-
-export function AutoPrint() {
-  useEffect(() => {
-    const id = setTimeout(() => window.print(), 200);
-    return () => clearTimeout(id);
-  }, []);
-
-  return null;
-}
+import { ChevronDown, CircleCheckBig, Printer } from "lucide-react";
+import { validarRetencion } from "@/app/dashboard/retenciones/actions";
 
 type CopyType = "original" | "copia1" | "copia2";
 
@@ -27,8 +19,19 @@ const PRINT_OPTIONS: { type: CopyType; label: string }[] = [
   { type: "copia2", label: "Imprimir copia 2" },
 ];
 
-export function PrintControls({ children }: { children: ReactNode }) {
+export function PrintControls({
+  children,
+  retencionId,
+  procesado,
+}: {
+  children: ReactNode;
+  retencionId: number;
+  procesado: boolean;
+}) {
   const [copyType, setCopyType] = useState<CopyType>("original");
+  const [isProcesado, setIsProcesado] = useState(procesado);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   function handlePrint(type: CopyType) {
     setCopyType(type);
@@ -36,28 +39,54 @@ export function PrintControls({ children }: { children: ReactNode }) {
     requestAnimationFrame(() => window.print());
   }
 
+  function handleValidar() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await validarRetencion(retencionId);
+        setIsProcesado(true);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "No se pudo validar el documento.",
+        );
+      }
+    });
+  }
+
   return (
     <>
-      <div className="print:hidden mb-6 flex items-center justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button type="button">
-              <Printer className="size-4" />
-              Imprimir
-              <ChevronDown className="size-4" />
+      <div className="print:hidden mb-6 flex flex-col items-end gap-2">
+        <div className="flex items-center justify-end">
+          {isProcesado ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button">
+                  <Printer className="size-4" />
+                  Imprimir
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {PRINT_OPTIONS.map((option) => (
+                  <DropdownMenuItem
+                    key={option.type}
+                    onClick={() => handlePrint(option.type)}
+                  >
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button type="button" onClick={handleValidar} disabled={isPending}>
+              <CircleCheckBig className="size-4" />
+              {isPending ? "Validando…" : "Validar documento"}
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {PRINT_OPTIONS.map((option) => (
-              <DropdownMenuItem
-                key={option.type}
-                onClick={() => handlePrint(option.type)}
-              >
-                {option.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+        </div>
+        {error && (
+          <p className="text-sm text-destructive">{error}</p>
+        )}
       </div>
 
       <div className="relative">

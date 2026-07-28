@@ -105,7 +105,7 @@ const ReciboRetencion = async ({
             E-mail: administracion@lacasadelpanadero.com
           </p>
           <h2 className="mt-2 text-base font-semibold">
-            Constancia de Retención
+            Comprobante de Retención
           </h2>
         </header>
 
@@ -161,6 +161,12 @@ const ReciboRetencion = async ({
                   </td>
                 </tr>
               ))}
+              {/* Mostrar una linea que diga final del detalle */}
+              <tr>
+                <td className="py-2 text-foreground/60" colSpan={3}>
+                  — fin del detalle —
+                </td>
+              </tr>
             </tbody>
             <tfoot>
               <tr>

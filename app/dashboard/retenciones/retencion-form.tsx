@@ -36,7 +36,7 @@ const formatCorrelativo = (cai?: CaiOption) => {
 
 const CONCEPTOS = [
   { descripcion: "Ret Art # 50 I.S.R", porcentaje: 12.5 },
-  { descripcion: "Ret Anticipo 1% Art # 19 DEC # 17", porcentaje: 1 },
+  { descripcion: "Ret Anticipo 1% Art # 19 DEC # 17 - 2010", porcentaje: 1 },
 ] as const;
 
 const calcImporte = (base: string, porcentaje: number) => {
@@ -123,7 +123,7 @@ export function RetencionForm({
     <form action={action} className="flex flex-col gap-8">
       {/* ---- Retención (maestro) ---- */}
       <section className="flex flex-col gap-5">
-        <h2 className="text-lg font-medium">Datos de la retención</h2>
+        <h2 className="text-lg font-medium">Comprobante de retención</h2>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">

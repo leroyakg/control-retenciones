@@ -141,7 +141,7 @@ export async function RetencionesTable({
                           <Pencil className="size-4" />
                         </Link>
                       </Button>
-                      <form action={deleteRetencion}>
+                      {/* <form action={deleteRetencion}>
                         <input type="hidden" name="id" value={r.id} />
                         <Button
                           size="icon"
@@ -152,7 +152,7 @@ export async function RetencionesTable({
                         >
                           <Trash2 className="size-4" />
                         </Button>
-                      </form>
+                      </form> */}
                     </div>
                   </td>
                 </tr>

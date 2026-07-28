@@ -7,8 +7,11 @@ export type RetencionRecord = {
   fecha_documento: string;
   fecha_emision: string;
   firma: string | null;
+  cai_proveedor: string | null;
+  correlativo_proveedor: string | null;
   create_time: string;
   update_time: string;
+  procesado: boolean;
 };
 
 export type RetencionDetalleRecord = {

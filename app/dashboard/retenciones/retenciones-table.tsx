@@ -112,10 +112,10 @@ export async function RetencionesTable({
                     {r.rtn}
                   </td>
                   <td className="p-3 font-mono text-xs text-foreground/70">
-                    {r.cai}
+                    {r.cai_proveedor ?? "—"}
                   </td>
                   <td className="p-3 font-mono text-xs text-foreground/70">
-                    {r.correlativo ?? "—"}
+                    {r.correlativo_proveedor ?? "—"}
                   </td>
                   <td className="p-3 text-foreground/70">
                     {formatDate(r.fecha_documento)}

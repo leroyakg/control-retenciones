@@ -127,29 +127,6 @@ export function RetencionForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="proveedor">Proveedor</Label>
-            <Input
-              id="proveedor"
-              name="proveedor"
-              placeholder="Nombre del proveedor"
-              defaultValue={retencion?.proveedor ?? ""}
-              required
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="rtn">RTN</Label>
-            <Input
-              id="rtn"
-              name="rtn"
-              placeholder="08011999123456"
-              defaultValue={retencion?.rtn ?? ""}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="flex flex-col gap-2">
             <Label htmlFor="cai">Bloque</Label>
             <select
               id="cai"
@@ -184,6 +161,31 @@ export function RetencionForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
+            <Label htmlFor="proveedor">Proveedor</Label>
+            <Input
+              id="proveedor"
+              name="proveedor"
+              placeholder="Nombre del proveedor"
+              defaultValue={retencion?.proveedor ?? ""}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="rtn">RTN</Label>
+            <Input
+              id="rtn"
+              name="rtn"
+              placeholder="08011999123456"
+              defaultValue={retencion?.rtn ?? ""}
+              required
+            />
+          </div>
+        </div>
+
+
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="fecha_documento">Fecha del documento</Label>
             <Input
               id="fecha_documento"
@@ -205,6 +207,26 @@ export function RetencionForm({
           </div>
         </div>
 
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="cai_proveedor">CAI del proveedor</Label>
+            <Input
+              id="cai_proveedor"
+              name="cai_proveedor"
+              placeholder="CAI del proveedor"
+              defaultValue={retencion?.cai_proveedor ?? ""}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="correlativo_proveedor">Correlativo del proveedor</Label>
+            <Input
+              id="correlativo_proveedor"
+              name="correlativo_proveedor"
+              placeholder="Correlativo del proveedor"
+              defaultValue={retencion?.correlativo_proveedor ?? ""}
+            />
+          </div>
+        </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="firma">Firma</Label>

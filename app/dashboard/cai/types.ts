@@ -9,6 +9,7 @@ export type CaiRecord = {
   prefijo: string | null;
   rango_inicial: number;
   rango_final: number;
+  correlativo_actual: number | null;
   fecha_emision: string | null;
   fecha_expiracion: string | null;
   estatus: CaiEstatus;

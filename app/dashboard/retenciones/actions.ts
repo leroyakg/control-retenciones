@@ -21,6 +21,8 @@ function buildMaster(formData: FormData) {
     proveedor: text("proveedor"),
     fecha_documento: text("fecha_documento"),
     fecha_emision: text("fecha_emision"),
+    cai_proveedor: text("cai_proveedor"),
+    correlativo_proveedor: text("correlativo_proveedor"),
     firma: text("firma"),
   };
 

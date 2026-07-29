@@ -143,9 +143,9 @@ const ReciboRetencion = async ({
               <br />
               E-mail: administracion@lacasadelpanadero.com
               <br />
-              Rango autorizado: {formatCorrelativo(cais.prefijo, cais.rango_inicial)} - {formatCorrelativo(cais.prefijo, cais.rango_final)}
+              Rango autorizado: {formatCorrelativo(cais.prefijo, cais.rango_inicial)} al {formatCorrelativo(cais.prefijo, cais.rango_final)}
               <br />
-              Fecha de expiracion: {formatDate(cais.fecha_expiracion)}
+              Fecha limite de Emision: {formatDate(cais.fecha_expiracion)}
               <br />
               CAI: {cais.cai} &nbsp;
             </p>
@@ -155,7 +155,7 @@ const ReciboRetencion = async ({
             </h2>
             <div>
               <p className="text-xs leading-snug text-foreground/70">
-                {formatCorrelativo(cais.prefijo, cais.correlativo_actual)}
+                No. {formatCorrelativo(cais.prefijo, cais.correlativo_actual)}
                 <br />
 
               </p>
@@ -207,10 +207,10 @@ const ReciboRetencion = async ({
             <table className="w-full text-sm">
               <thead className="border-b border-foreground/10 text-left text-foreground/60">
                 <tr>
-                  <th className="py-2 font-medium">Descripción</th>
+                  <th className="py-2 font-medium">Descripción del Impuesto Retenido</th>
                   <th className="py-2 font-medium text-right">Base imponible</th>
-                  <th className="py-2 font-medium text-right">Porcentaje</th>
-                  <th className="py-2 font-medium text-right">Importe</th>
+                  <th className="py-2 font-medium text-right">% de Retencion</th>
+                  <th className="py-2 font-medium text-right">Importe Total Retenido</th>
                 </tr>
               </thead>
               <tbody>

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { PrintControls } from "./auto-print";
 import type { RetencionDetalleRecord, RetencionRecord } from "@/app/dashboard/retenciones/types";
-import logo from "@/img/icon_no_background.png";
+import logo from "@/img/logo_lcp_og_crop_no_bckgrd.png"; //
 // import { CaiRecord } from "@/app/dashboard/cai/types";
 
 const currency = new Intl.NumberFormat("es-HN", {
@@ -126,8 +126,8 @@ const ReciboRetencion = async ({
             <Image
               src={logo}
               alt="La Casa del Panadero"
-              width={64}
-              height={68}
+              width={264}
+              height={128}
               className="mb-1"
             />
             <h1 className="text-xl font-bold underline underline-offset-2">
@@ -144,6 +144,8 @@ const ReciboRetencion = async ({
               E-mail: administracion@lacasadelpanadero.com
               <br />
               Rango autorizado: {formatCorrelativo(cais.prefijo, cais.rango_inicial)} - {formatCorrelativo(cais.prefijo, cais.rango_final)}
+              <br />
+              Fecha de expiracion: {formatDate(cais.fecha_expiracion)}
               <br />
               CAI: {cais.cai} &nbsp;
             </p>
@@ -162,33 +164,43 @@ const ReciboRetencion = async ({
 
 
 
-          <section className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-            <div>
-              <span className="text-foreground/60">Proveedor</span>
-              <p className="font-mono font-medium">{retencion.proveedor}</p>
-            </div>
-            <div>
-              <span className="text-foreground/60">RTN</span>
-              <p className="font-mono font-medium">{retencion.rtn}</p>
-            </div>
-            <div>
-              <span className="text-foreground/60">CAI</span>
-              <p className="font-mono text-xs font-medium">{retencion.cai_proveedor ?? "—"}</p>
-            </div>
-            <div>
-              <span className="text-foreground/60">Correlativo</span>
-              <p className="font-mono text-xs font-medium">
-                {retencion.correlativo_proveedor ?? "—"}
+          <section className="gap-x-6 gap-y-3 text-sm">
+
+            <div className="mb-2">
+              <p className="text-foreground/60 font-bold">Fecha de emisión: &nbsp;
+                <span className="ml-3 font-mono font-medium">{formatDate(retencion.fecha_emision)}</span>
               </p>
             </div>
-            <div>
-              <span className="text-foreground/60">Fecha del documento</span>
-              <p className="font-mono font-medium">{formatDate(retencion.fecha_documento)}</p>
+
+            <div className="mb-2">
+              <p className="text-foreground/60 font-bold">
+                Proveedor: &nbsp;<span className="ml-3 font-mono font-medium">{retencion.proveedor}</span>
+              </p>
             </div>
-            <div>
-              <span className="text-foreground/60">Fecha de emisión</span>
-              <p className="font-mono font-medium">{formatDate(retencion.fecha_emision)}</p>
+
+            <div className="mb-2">
+              <p className="text-foreground/60 font-bold">
+                R.T.N. Del Proveedor: <span className="ml-3 font-mono font-medium">{retencion.rtn}</span>
+              </p>
             </div>
+
+            <div className="mb-2">
+              <p className="text-foreground/60 font-bold">
+                No Correlativo Del Comprobante: <span className="ml-3 font-mono font-medium">{retencion.correlativo_proveedor}</span>
+              </p>
+            </div>
+
+            <div className="mb-2">
+              <p className="text-foreground/60 font-bold">
+                Fecha de Emisión Del Comprobante: &nbsp;<span className="ml-3 font-mono font-medium">{formatDate(retencion.fecha_documento)}</span></p>
+            </div>
+
+            <div className="mb-2">
+              <p className="text-foreground/60 font-bold">
+                CAI Del Comprobante: <span className="ml-3 font-mono text-xs font-medium">{retencion.cai_proveedor ?? "—"}</span>
+              </p>
+            </div>
+
           </section>
 
           <section>
@@ -197,6 +209,7 @@ const ReciboRetencion = async ({
                 <tr>
                   <th className="py-2 font-medium">Descripción</th>
                   <th className="py-2 font-medium text-right">Base imponible</th>
+                  <th className="py-2 font-medium text-right">Porcentaje</th>
                   <th className="py-2 font-medium text-right">Importe</th>
                 </tr>
               </thead>
@@ -208,21 +221,24 @@ const ReciboRetencion = async ({
                       {currency.format(Number(d.base_imponible) || 0)}
                     </td>
                     <td className="py-2 text-right tabular-nums">
+                      {d.porcentaje_imponible ? `${d.porcentaje_imponible}%` : "—"}
+                    </td>
+                    <td className="py-2 text-right tabular-nums">
                       {currency.format(Number(d.importe_total) || 0)}
                     </td>
                   </tr>
                 ))}
                 {/* Mostrar una linea que diga final del detalle */}
                 <tr>
-                  <td className="py-2 text-foreground/60 text-center" colSpan={3}>
-                    — fin del detalle —
+                  <td className="py-2 text-foreground/60 text-center" colSpan={4}>
+                    ---------— Ultima Linea —---------
                   </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td className="pt-3 font-medium" colSpan={2}>
-                    Total retenido
+                  <td className="pt-3 font-medium" colSpan={3}>
+                    Total Retenido
                   </td>
                   <td className="pt-3 text-right font-medium tabular-nums">
                     {currency.format(total)}
@@ -234,7 +250,8 @@ const ReciboRetencion = async ({
 
           <footer className="mt-8 flex flex-col items-center gap-1 pt-8 text-sm">
             <div className="w-64 border-t border-foreground/40 pt-1 text-center">
-              {retencion.firma || "Firma autorizada"}
+              {/* {retencion.firma || "Firma autorizada"} */}
+              Firma
             </div>
 
           </footer>

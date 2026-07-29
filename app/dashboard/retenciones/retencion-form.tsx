@@ -37,6 +37,7 @@ const formatCorrelativo = (cai?: CaiOption) => {
 const CONCEPTOS = [
   { descripcion: "Ret Art # 50 I.S.R", porcentaje: 12.5 },
   { descripcion: "Ret Anticipo 1% Art # 19 DEC # 17 - 2010", porcentaje: 1 },
+  { descripcion: "Ret I.S.V Articulo # 8 I.S.V", porcentaje: 15 },
 ] as const;
 
 const calcImporte = (base: string, porcentaje: number) => {
@@ -182,8 +183,6 @@ export function RetencionForm({
           </div>
         </div>
 
-
-
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="fecha_documento">Fecha del documento</Label>
@@ -327,10 +326,11 @@ export function RetencionForm({
                   </td>
                   <td className="p-2">
                     <Input
+                      name="det_porcentaje_imponible"
                       readOnly
                       tabIndex={-1}
                       className="bg-muted/50"
-                      value={row.porcentaje ? `${row.porcentaje}%` : ""}
+                      value={row.porcentaje ? `${row.porcentaje}` : ""}
                       placeholder="—"
                     />
                   </td>

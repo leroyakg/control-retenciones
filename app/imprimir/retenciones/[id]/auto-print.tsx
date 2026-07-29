@@ -93,11 +93,24 @@ export function PrintControls({
         {copyType !== "original" && (
           <div className="pointer-events-none fixed inset-0 z-50 hidden items-center justify-center print:flex">
             <span className="-rotate-[30deg] select-none text-8xl font-bold uppercase tracking-widest text-destructive/20">
-              {copyType === "copia1" ? "Copia 1" : "Copia 2"}
+              Copia
             </span>
           </div>
         )}
         {children}
+
+        <div className="fixed bottom-0 left-0 right-0 z-50 hidden items-center justify-center gap-2 border-t border-foreground/10 bg-background/80 p-4 sm:flex">
+
+          {copyType !== "original" ? (
+            <p className="text-sm text-foreground/60">
+              Copia: Obligado Tributario
+            </p>
+          ) : (
+            <p className="text-sm text-foreground/60">
+              Original: Cliente
+            </p>
+          )}
+        </div>
       </div>
     </>
   );

@@ -38,12 +38,16 @@ function buildDetalles(formData: FormData) {
   const descripciones = formData.getAll("descripcion");
   const bases = formData.getAll("det_base_imponible");
   const totales = formData.getAll("det_importe_total");
+  const porcentajes = formData.getAll("det_porcentaje_imponible");
+
+  console.log("Detalles raw:", { descripciones, bases, totales, porcentajes });
 
   const detalles = bases
     .map((base, i) => ({
       descripcion: (descripciones[i] as string)?.trim() || null,
       base_imponible: parseNumber(base),
       importe_total: parseNumber(totales[i] ?? null),
+      porcentaje: parseNumber(porcentajes[i] ?? null),
     }))
     .filter(
       (d) =>
@@ -55,6 +59,8 @@ function buildDetalles(formData: FormData) {
   if (detalles.length === 0) {
     throw new Error("Agregá al menos un registro de detalle.");
   }
+
+  // console.log("Detalles parsed:", detalles);
 
   return detalles;
 }
@@ -81,6 +87,7 @@ export async function createRetencion(formData: FormData) {
     descripcion: d.descripcion,
     base_imponible: d.base_imponible ?? 0,
     importe_total: d.importe_total ?? 0,
+    porcentaje_imponible: d.porcentaje ?? 0,
     create_time: now,
     update_time: now,
   }));
@@ -156,6 +163,7 @@ export async function updateRetencion(id: number, formData: FormData) {
     descripcion: d.descripcion,
     base_imponible: d.base_imponible ?? 0,
     importe_total: d.importe_total ?? 0,
+    porcentaje_imponible: d.porcentaje ?? 0,
     create_time: now,
     update_time: now,
   }));

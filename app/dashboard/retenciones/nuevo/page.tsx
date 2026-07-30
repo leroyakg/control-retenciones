@@ -11,10 +11,36 @@ const NuevaRetencionForm = async () => {
 
   const { data } = await supabase
     .from("cais")
-    .select("id, cai, bloque, prefijo, correlativo_actual")
+    .select("id, cai, bloque, prefijo, correlativo_actual, rango_inicial, rango_final, fecha_expiracion")
     .eq("estatus", "activo")
     .is("delete_time", null)
     .order("create_time", { ascending: false });
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+        No hay CAIs activos disponibles. Por favor, registrá un CAI antes de crear una retención.
+      </div>
+    );
+  }
+
+  const { correlativo_actual, rango_final, fecha_expiracion } = data[0];
+
+  if (correlativo_actual > rango_final) {
+    return (
+      <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+        El CAI activo ha alcanzado su límite de correlativos. Por favor, registrá un nuevo CAI antes de crear una retención.
+      </div>
+    );
+  }
+
+  if (fecha_expiracion && new Date(fecha_expiracion) < new Date()) {
+    return (
+      <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+        El CAI activo ha expirado. Por favor, registrá un nuevo CAI antes de crear una retención.
+      </div>
+    );
+  }
 
   return <RetencionForm action={createRetencion} cais={data ?? []} />;
 };

@@ -155,6 +155,7 @@ export function RetencionForm({
               name="correlativo"
               placeholder="000-001-01-00000251"
               value={correlativo}
+              readOnly
               onChange={(e) => setCorrelativo(e.target.value)}
             />
           </div>

@@ -80,7 +80,7 @@ const SummaryCards = async () => {
     await Promise.all([
       supabase
         .from("retenciones")
-        .select("*", { count: "exact", head: true })
+        .select("*")
         .is("deleted_at", null),
       supabase
         .from("cais")

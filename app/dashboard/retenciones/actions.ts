@@ -176,6 +176,9 @@ export async function updateRetencion(id: number, formData: FormData) {
     throw new Error(detError.message);
   }
 
+  console.log("Retención actualizada:", { id, master, detalles });
+
+  revalidatePath(`/dashboard/retenciones/${id}/editar`);
   revalidatePath("/dashboard/retenciones");
   redirect("/dashboard/retenciones");
 }

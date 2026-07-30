@@ -35,7 +35,7 @@ const formatCorrelativo = (cai?: CaiOption) => {
 };
 
 const CONCEPTOS = [
-  { descripcion: "Ret Art # 50 I.S.R", porcentaje: 12.5 },
+  { descripcion: "Ret por Servicios Honorarios Art # 50 I.S.R", porcentaje: 12.5 },
   { descripcion: "Ret Anticipo 1% Art # 19 DEC # 17 - 2010", porcentaje: 1 },
   { descripcion: "Ret I.S.V Articulo # 8 I.S.V", porcentaje: 15 },
 ] as const;

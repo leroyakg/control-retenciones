@@ -166,36 +166,36 @@ const ReciboRetencion = async ({
 
           <section className="gap-x-6 gap-y-3 text-sm">
 
-            <div className="mb-2">
+            <div className="mb-2 text-sm">
               <p className="text-foreground/60 font-bold">Fecha de emisión: &nbsp;
                 <span className="ml-3 font-mono font-medium">{formatDate(retencion.fecha_emision)}</span>
               </p>
             </div>
 
-            <div className="mb-2">
+            <div className="mb-2 text-sm">
               <p className="text-foreground/60 font-bold">
-                Proveedor: &nbsp;<span className="ml-3 font-mono font-medium">{retencion.proveedor}</span>
+                Nombre del Proveedor: &nbsp;<span className="ml-3 font-mono font-medium">{retencion.proveedor}</span>
               </p>
             </div>
 
-            <div className="mb-2">
+            <div className="mb-2 text-sm">
               <p className="text-foreground/60 font-bold">
                 R.T.N. Del Proveedor: <span className="ml-3 font-mono font-medium">{retencion.rtn}</span>
               </p>
             </div>
 
-            <div className="mb-2">
+            <div className="mb-2 text-sm">
               <p className="text-foreground/60 font-bold">
                 No Correlativo Del Comprobante: <span className="ml-3 font-mono font-medium">{retencion.correlativo_proveedor}</span>
               </p>
             </div>
 
-            <div className="mb-2">
+            <div className="mb-2 text-sm">
               <p className="text-foreground/60 font-bold">
                 Fecha de Emisión Del Comprobante: &nbsp;<span className="ml-3 font-mono font-medium">{formatDate(retencion.fecha_documento)}</span></p>
             </div>
 
-            <div className="mb-2">
+            <div className="mb-2 text-sm">
               <p className="text-foreground/60 font-bold">
                 CAI Del Comprobante: <span className="ml-3 font-mono text-xs font-medium">{retencion.cai_proveedor ?? "—"}</span>
               </p>
@@ -204,43 +204,44 @@ const ReciboRetencion = async ({
           </section>
 
           <section>
-            <table className="w-full text-sm">
-              <thead className="border-b border-foreground/10 text-left text-foreground/60">
+
+            <table className="w-full border-collapse text-sm">
+              <thead className="bg-foreground/5 text-left text-foreground/70">
                 <tr>
-                  <th className="py-2 font-medium">Descripción del Impuesto Retenido</th>
-                  <th className="py-2 font-medium text-right">Base imponible</th>
-                  <th className="py-2 font-medium text-right">% de Retencion</th>
-                  <th className="py-2 font-medium text-right">Importe Total Retenido</th>
+                  <th className="text-xs border border-foreground/30 px-3 py-2 font-semibold">Descripción del Impuesto Retenido</th>
+                  <th className="text-xs border border-foreground/30 px-3 py-2 font-semibold text-right">Base imponible</th>
+                  <th className="text-xs border border-foreground/30 px-3 py-2 font-semibold text-right">% de Retencion</th>
+                  <th className="text-xs border border-foreground/30 px-3 py-2 font-semibold text-right">Importe Total Retenido</th>
                 </tr>
               </thead>
               <tbody>
                 {detalles.map((d) => (
-                  <tr key={d.id} className="border-b border-foreground/5">
-                    <td className="py-2">{d.descripcion ?? "—"}</td>
-                    <td className="py-2 text-right tabular-nums">
+                  <tr key={d.id}>
+                    <td className="text-xs border border-foreground/30 px-3 py-2">{d.descripcion ?? "—"}</td>
+                    <td className="text-xs border border-foreground/30 px-3 py-2 text-right tabular-nums">
                       {currency.format(Number(d.base_imponible) || 0)}
                     </td>
-                    <td className="py-2 text-right tabular-nums">
+                    <td className="text-xs border border-foreground/30 px-3 py-2 text-right tabular-nums">
                       {d.porcentaje_imponible ? `${d.porcentaje_imponible}%` : "—"}
                     </td>
-                    <td className="py-2 text-right tabular-nums">
+                    <td className="text-xs border border-foreground/30 px-3 py-2 text-right tabular-nums">
                       {currency.format(Number(d.importe_total) || 0)}
                     </td>
                   </tr>
                 ))}
                 {/* Mostrar una linea que diga final del detalle */}
                 <tr>
-                  <td className="py-2 text-foreground/60 text-center" colSpan={4}>
+                  <td className="text-xs border border-foreground/30 px-3 py-2 text-foreground/60 text-center" colSpan={4}>
                     ---------— Ultima Linea —---------
                   </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td className="pt-3 font-medium" colSpan={3}>
+                  <td className="text-xs border border-foreground/30 px-3 py-2 font-semibold" colSpan={3}>
                     Total Retenido
                   </td>
-                  <td className="pt-3 text-right font-medium tabular-nums">
+                  <td className="text-xs border border-foreground/30 px-3 py-2 text-right font-semibold tabular-nums">
                     {currency.format(total)}
                   </td>
                 </tr>

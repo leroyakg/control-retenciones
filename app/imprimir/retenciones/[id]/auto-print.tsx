@@ -11,12 +11,11 @@ import {
 import { ChevronDown, CircleCheckBig, Printer } from "lucide-react";
 import { validarRetencion } from "@/app/dashboard/retenciones/actions";
 
-type CopyType = "original" | "copia1" | "copia2";
+type CopyType = "original" | "copia";
 
 const PRINT_OPTIONS: { type: CopyType; label: string }[] = [
-  { type: "original", label: "Imprimir original y Cerrar" },
-  { type: "copia1", label: "Imprimir copia 1" },
-  { type: "copia2", label: "Imprimir copia 2" },
+  { type: "original", label: "Imprimir original" },
+  { type: "copia", label: "Imprimir copia" },
 ];
 
 export function PrintControls({
@@ -111,7 +110,7 @@ export function PrintControls({
             </span>
             <br />
             <span>
-              Copia: Obligado Tributario
+              Copia: Obligado Tributario Emisor
             </span>
           </p>
           <br />

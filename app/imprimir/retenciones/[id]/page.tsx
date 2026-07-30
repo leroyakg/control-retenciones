@@ -155,7 +155,7 @@ const ReciboRetencion = async ({
             </h2>
             <div>
               <p className="text-xs leading-snug text-foreground/70">
-                No. {formatCorrelativo(cais.prefijo, cais.correlativo_actual)}
+                No. {retencion.correlativo}
                 <br />
 
               </p>

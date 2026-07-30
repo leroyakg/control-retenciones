@@ -131,7 +131,6 @@ export async function RetencionesTable({
                       <Button asChild size="icon" variant="ghost" title="Imprimir">
                         <Link
                           href={`/imprimir/retenciones/${r.id}`}
-                          target="_blank"
                         >
                           <Printer className="size-4" />
                         </Link>

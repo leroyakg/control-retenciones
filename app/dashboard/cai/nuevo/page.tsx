@@ -47,11 +47,11 @@ const NuevoCaiForm = async () => {
   //   );
   // }
 
-  console.log({
-    latestCai
-  })
+  const todayStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Tegucigalpa",
+  }).format(new Date());
 
-  if (new Date(latestCai.fecha_expiracion) > new Date()) {
+  if (latestCai.fecha_expiracion && latestCai.fecha_expiracion.slice(0, 10) >= todayStr) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
         El CAI más reciente aún está activo. Por favor, editá el CAI existente en lugar de crear uno nuevo.

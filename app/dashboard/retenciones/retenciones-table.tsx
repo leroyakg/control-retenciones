@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Pencil, Printer, Trash2 } from "lucide-react";
-import { deleteRetencion } from "./actions";
+import { ChevronLeft, ChevronRight, Pencil, Printer, FileX } from "lucide-react";
+// import { deleteRetencion } from "./actions";
 import type { RetencionRecord } from "./types";
+import AlertButton from "./alertButton";
 
 const PAGE_SIZE = 10;
 
@@ -143,18 +144,12 @@ export async function RetencionesTable({
                           </Link>
                         </Button>
                       )}
-                      {/* <form action={deleteRetencion}>
-                        <input type="hidden" name="id" value={r.id} />
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          type="submit"
-                          title="Eliminar"
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
-                      </form> */}
+                      {
+                        r.fecha_anulacion && (
+                          <AlertButton />
+                        )
+                      }
+
                     </div>
                   </td>
                 </tr>

@@ -66,6 +66,9 @@ function buildDetalles(formData: FormData) {
 }
 
 export async function createRetencion(formData: FormData) {
+
+  console.log("Creating retencion with formData:", Object.fromEntries(formData.entries()));
+
   const now = new Date().toISOString();
   const master = buildMaster(formData);
   const detalles = buildDetalles(formData);
@@ -116,11 +119,11 @@ export async function createRetencion(formData: FormData) {
   const correlativoActual = (caiData.correlativo_actual ?? 0) + 1;
 
   let fechaExpiracion: string | null = null;
-  let estado = "activo";
+  let estatus = "activo";
 
   if (caiData.rango_final <= correlativoActual) {
     fechaExpiracion = new Date().toISOString();
-    estado = "agotado";
+    estatus = "agotado";
   }
 
   // incrementar el correlativo_actual del CAI utilizado
@@ -129,7 +132,7 @@ export async function createRetencion(formData: FormData) {
     .update({
       correlativo_actual: correlativoActual,
       fecha_expiracion: fechaExpiracion,
-      estado: estado,
+      estatus: estatus,
       update_time: new Date().toISOString(),
     })
     .eq("id", caiData.id);

@@ -57,6 +57,7 @@ export function PrintControls({
       <div className="print:hidden mb-6 flex flex-col items-end gap-2">
         <div className="flex items-center justify-end">
           {isProcesado ? (
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button type="button">
@@ -76,6 +77,9 @@ export function PrintControls({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+
+
           ) : (
             <Button type="button" onClick={handleValidar} disabled={isPending}>
               <CircleCheckBig className="size-4" />

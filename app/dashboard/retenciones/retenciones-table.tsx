@@ -15,11 +15,11 @@ const currency = new Intl.NumberFormat("es-HN", {
 
 function formatDate(value: string | null) {
   if (!value) return "—";
-  return new Date(value).toLocaleDateString("es-HN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // Date-only string ("YYYY-MM-DD"); format the parts directly so it isn't
+  // shifted back a day by parsing as UTC midnight in Honduras time (UTC-6).
+  const [year, month, day] = value.slice(0, 10).split("-");
+  if (year && month && day) return `${day}/${month}/${year}`;
+  return value;
 }
 
 type RetencionRow = RetencionRecord & {

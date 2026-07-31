@@ -19,11 +19,12 @@ const statusVariant: Record<
 
 function formatDate(value: string | null) {
   if (!value) return "—";
-  return new Date(value).toLocaleDateString("es-HN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // `value` is a date-only string ("YYYY-MM-DD"). `new Date(value)` would parse
+  // it as UTC midnight and then shift it back a day in Honduras time (UTC-6),
+  // so format the parts directly instead of going through a timezone.
+  const [year, month, day] = value.slice(0, 10).split("-");
+  if (year && month && day) return `${day}/${month}/${year}`;
+  return value;
 }
 
 function formatRange(cai: CaiRecord) {

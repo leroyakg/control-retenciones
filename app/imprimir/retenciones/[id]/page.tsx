@@ -120,7 +120,11 @@ const ReciboRetencion = async ({
         </Button>
       </div>
 
-      <PrintControls retencionId={retencion.id} procesado={retencion.procesado}>
+      <PrintControls
+        retencionId={retencion.id}
+        procesado={retencion.procesado}
+        anulado={retencion.fecha_anulacion != null}
+      >
         <div className="mx-auto flex max-w-2xl flex-col gap-6 rounded-md border border-foreground/10 p-8 print:border-0 print:p-0">
           <header className="flex flex-col items-center gap-2 border-b border-foreground/10 pb-4 text-center">
             <Image

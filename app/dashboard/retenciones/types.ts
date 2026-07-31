@@ -12,6 +12,7 @@ export type RetencionRecord = {
   create_time: string;
   update_time: string;
   procesado: boolean;
+  fecha_anulacion: string | null;
 };
 
 export type RetencionDetalleRecord = {

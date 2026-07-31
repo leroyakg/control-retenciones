@@ -200,6 +200,23 @@ export async function validarRetencion(id: number) {
   revalidatePath("/dashboard/retenciones");
 }
 
+export async function anularRetencion(id: number) {
+  const now = new Date().toISOString();
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("retenciones")
+    .update({ fecha_anulacion: now, update_time: now })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath(`/imprimir/retenciones/${id}`);
+  revalidatePath("/dashboard/retenciones");
+}
+
 export async function deleteRetencion(formData: FormData) {
   const id = formData.get("id") as string;
   if (!id) return;

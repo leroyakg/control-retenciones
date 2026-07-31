@@ -63,7 +63,7 @@ const NuevoCaiForm = async () => {
     );
   }
 
-  return <CaiForm action={createCai} submitLabel="Guardar" />;
+  return <CaiForm editMode={true} action={createCai} submitLabel="Guardar" />;
 };
 
 export default function NuevoCaiPage() {

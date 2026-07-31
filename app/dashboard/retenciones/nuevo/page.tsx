@@ -26,6 +26,12 @@ const NuevaRetencionForm = async () => {
 
   const { correlativo_actual, rango_final, fecha_expiracion } = data[0];
 
+  console.log({
+    correlativo_actual,
+    rango_final,
+    fecha_expiracion
+  })
+
   if (correlativo_actual > rango_final) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">

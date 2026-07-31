@@ -47,6 +47,10 @@ const NuevoCaiForm = async () => {
   //   );
   // }
 
+  console.log({
+    latestCai
+  })
+
   if (new Date(latestCai.fecha_expiracion) > new Date()) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
@@ -55,7 +59,7 @@ const NuevoCaiForm = async () => {
     );
   }
 
-  if (latestCai.correlativo_actual >= latestCai.rango_final) {
+  if (latestCai.correlativo_actual <= latestCai.rango_final) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
         El CAI más reciente aún tiene correlativos disponibles. Por favor, editá el CAI existente en lugar de crear uno nuevo.

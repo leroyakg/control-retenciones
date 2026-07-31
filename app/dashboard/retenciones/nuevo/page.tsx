@@ -34,7 +34,16 @@ const NuevaRetencionForm = async () => {
     );
   }
 
-  if (fecha_expiracion && new Date(fecha_expiracion) < new Date()) {
+
+  // `fecha_expiracion` is a date-only string ("YYYY-MM-DD"). Comparing it via
+  // `new Date()` treats it as UTC midnight and, in Honduras time (UTC-6), marks
+  // it expired a day early. Compare calendar dates as strings instead, treating
+  // the CAI as valid through its expiration day (inclusive).
+  const todayStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Tegucigalpa",
+  }).format(new Date());
+
+  if (fecha_expiracion && fecha_expiracion.slice(0, 10) < todayStr) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
         El CAI activo ha expirado. Por favor, registrá un nuevo CAI antes de crear una retención.

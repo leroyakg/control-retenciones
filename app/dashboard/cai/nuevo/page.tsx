@@ -3,6 +3,68 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { createCai } from "../actions";
 import { CaiForm } from "../cai-form";
+import { createClient } from "@/lib/supabase/server";
+import { Suspense } from "react";
+
+const NuevoCaiForm = async () => {
+
+  const supabase = await createClient();
+
+  const [caisRes] = await Promise.all([
+    supabase
+      .from("cais")
+      .select("*")
+      .is("delete_time", null)
+      .order("create_time", { ascending: false })
+      .limit(1),
+  ]);
+
+  if (caisRes.error) {
+    return (
+      <p className="rounded-md border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+        No se pudo cargar los CAIs: {caisRes.error.message}
+      </p>
+    );
+  }
+
+  const cais = caisRes.data ?? [];
+
+  // if (cais.length > 0) {
+  //   return (
+  //     <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+  //       Ya existe un CAI registrado. Por favor, editá el CAI existente en lugar de crear uno nuevo.
+  //     </div>
+  //   );
+  // }
+
+  const latestCai = cais[0];
+
+  // if (latestCai.estatus === "activo") {
+  //   return (
+  //     <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+  //       El CAI más reciente aún está activo. Por favor, editá el CAI existente en lugar de crear uno nuevo.
+  //     </div>
+  //   );
+  // }
+
+  if (new Date(latestCai.fecha_expiracion) > new Date()) {
+    return (
+      <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+        El CAI más reciente aún está activo. Por favor, editá el CAI existente en lugar de crear uno nuevo.
+      </div>
+    );
+  }
+
+  if (latestCai.correlativo_actual >= latestCai.rango_final) {
+    return (
+      <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+        El CAI más reciente aún tiene correlativos disponibles. Por favor, editá el CAI existente en lugar de crear uno nuevo.
+      </div>
+    );
+  }
+
+  return <CaiForm action={createCai} submitLabel="Guardar" />;
+};
 
 export default function NuevoCaiPage() {
   return (
@@ -21,7 +83,15 @@ export default function NuevoCaiPage() {
         </div>
       </div>
 
-      <CaiForm action={createCai} submitLabel="Guardar" />
+      <Suspense
+        fallback={
+          <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
+            Cargando formulario…
+          </div>
+        }
+      >
+        <NuevoCaiForm />
+      </Suspense>
     </div>
   );
 }

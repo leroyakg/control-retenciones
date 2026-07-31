@@ -105,7 +105,7 @@ export async function createRetencion(formData: FormData) {
   // obtener el id del cai
   const { data: caiData, error: caiError } = await supabase
     .from("cais")
-    .select("id, correlativo_actual")
+    .select("id, correlativo_actual, rango_final")
     .eq("cai", master.cai)
     .single();
 
@@ -113,14 +113,24 @@ export async function createRetencion(formData: FormData) {
     throw new Error(caiError.message);
   }
 
+  const correlativoActual = (caiData.correlativo_actual ?? 0) + 1;
+
+  let fechaExpiracion: string | null = null;
+  let estado = "activo";
+
+  if (caiData.rango_final <= correlativoActual) {
+    fechaExpiracion = new Date().toISOString();
+    estado = "agotado";
+  }
+
   // incrementar el correlativo_actual del CAI utilizado
   const { error: updateCaiError } = await supabase
     .from("cais")
     .update({
-      correlativo_actual:
-        caiData.correlativo_actual !== null
-          ? caiData.correlativo_actual + 1
-          : 0,
+      correlativo_actual: correlativoActual,
+      fecha_expiracion: fechaExpiracion,
+      estado: estado,
+      update_time: new Date().toISOString(),
     })
     .eq("id", caiData.id);
 
@@ -133,6 +143,7 @@ export async function createRetencion(formData: FormData) {
 }
 
 export async function updateRetencion(id: number, formData: FormData) {
+
   const now = new Date().toISOString();
   const master = buildMaster(formData);
   const detalles = buildDetalles(formData);

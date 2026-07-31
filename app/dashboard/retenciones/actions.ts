@@ -179,6 +179,7 @@ export async function updateRetencion(id: number, formData: FormData) {
   console.log("Retención actualizada:", { id, master, detalles });
 
   revalidatePath(`/dashboard/retenciones/${id}/editar`);
+  revalidatePath(`/imprimir/retenciones/${id}`);
   revalidatePath("/dashboard/retenciones");
   redirect("/dashboard/retenciones");
 }
@@ -196,6 +197,7 @@ export async function validarRetencion(id: number) {
     throw new Error(error.message);
   }
 
+  revalidatePath(`/dashboard/retenciones/${id}/editar`);
   revalidatePath(`/imprimir/retenciones/${id}`);
   revalidatePath("/dashboard/retenciones");
 }
@@ -213,6 +215,7 @@ export async function anularRetencion(id: number) {
     throw new Error(error.message);
   }
 
+  revalidatePath(`/dashboard/retenciones/${id}/editar`);
   revalidatePath(`/imprimir/retenciones/${id}`);
   revalidatePath("/dashboard/retenciones");
 }

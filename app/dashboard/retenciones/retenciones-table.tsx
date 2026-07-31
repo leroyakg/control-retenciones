@@ -131,13 +131,14 @@ export async function RetencionesTable({
                       <Button asChild size="icon" variant="ghost" title="Imprimir">
                         <Link
                           href={`/imprimir/retenciones/${r.id}`}
+                          prefetch={false}
                         >
                           <Printer className="size-4" />
                         </Link>
                       </Button>
                       {!r.procesado && (
                         <Button asChild size="icon" variant="ghost" title="Editar">
-                          <Link href={`/dashboard/retenciones/${r.id}/editar`}>
+                          <Link href={`/dashboard/retenciones/${r.id}/editar`} prefetch={false}>
                             <Pencil className="size-4" />
                           </Link>
                         </Button>

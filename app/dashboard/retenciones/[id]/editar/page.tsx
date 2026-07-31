@@ -50,6 +50,11 @@ const EditarRetencionForm = async ({
 
   const action = updateRetencion.bind(null, retencion.id);
 
+  console.log({
+    retencion,
+    detalles
+  })
+
   return (
     <RetencionForm
       action={action}

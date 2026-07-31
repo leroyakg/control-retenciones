@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,14 +20,36 @@ export function CaiForm({
   action,
   cai,
   submitLabel = "Guardar",
+  presetValues,
+  previousCai,
 }: {
   editMode?: boolean;
   action: (formData: FormData) => void;
   cai?: CaiRecord;
   submitLabel?: string;
+  presetValues?: CaiRecord;
+  previousCai?: string | null;
 }) {
+  const [error, setError] = useState<string | null>(null);
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const value = (
+      (new FormData(event.currentTarget).get("cai") as string) ?? ""
+    ).trim();
+
+    if (previousCai && value === previousCai.trim()) {
+      // Block the server action and warn before it hits the unique constraint
+      // on the `cai` code.
+      event.preventDefault();
+      setError("El CAI no debe ser igual al CAI anterior.");
+      return;
+    }
+
+    setError(null);
+  }
+
   return (
-    <form action={action} className="flex flex-col gap-5">
+    <form action={action} onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="cai">CAI</Label>
@@ -34,8 +59,10 @@ export function CaiForm({
             disabled={!editMode}
             placeholder="7F92-AB34-XX11"
             defaultValue={cai?.cai ?? ""}
+            aria-invalid={error ? true : undefined}
             required
           />
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="bloque">Nombre del bloque</Label>
@@ -57,7 +84,7 @@ export function CaiForm({
             name="prefijo"
             placeholder="000-001-01"
             disabled={!editMode}
-            defaultValue={cai?.prefijo ?? ""}
+            defaultValue={presetValues?.prefijo ?? cai?.prefijo ?? ""}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -89,7 +116,7 @@ export function CaiForm({
             step={1}
             placeholder="1"
             disabled={!editMode}
-            defaultValue={cai?.rango_inicial ?? ""}
+            defaultValue={presetValues?.rango_final !== undefined ? presetValues.rango_final + 1 : cai?.rango_inicial ?? ""}
             required
           />
         </div>

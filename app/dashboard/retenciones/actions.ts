@@ -118,11 +118,11 @@ export async function createRetencion(formData: FormData) {
 
   const correlativoActual = (caiData.correlativo_actual ?? 0) + 1;
 
-  let fechaExpiracion: string | null = null;
+  // let fechaExpiracion: string | null = null;
   let estatus = "activo";
 
   if (caiData.rango_final <= correlativoActual) {
-    fechaExpiracion = new Date().toISOString();
+    // fechaExpiracion = new Date().toISOString();
     estatus = "agotado";
   }
 
@@ -131,7 +131,6 @@ export async function createRetencion(formData: FormData) {
     .from("cais")
     .update({
       correlativo_actual: correlativoActual,
-      fecha_expiracion: fechaExpiracion,
       estatus: estatus,
       update_time: new Date().toISOString(),
     })

@@ -96,12 +96,16 @@ const CaiTable = async () => {
                           <Eye className="size-4" />
                         </Link>
                       </Button>
-                      <Button asChild size="icon" variant="ghost" title="Editar">
-                        <Link href={`/dashboard/cai/${cai.id}/editar`}>
-                          <Pencil className="size-4" />
-                        </Link>
-                      </Button>
-                      <form action={deleteCai}>
+                      {
+                        cai.estatus === "activo" && (
+                          <Button asChild size="icon" variant="ghost" title="Editar">
+                            <Link href={`/dashboard/cai/${cai.id}/editar`}>
+                              <Pencil className="size-4" />
+                            </Link>
+                          </Button>
+                        )
+                      }
+                      {/* <form action={deleteCai}>
                         <input type="hidden" name="id" value={cai.id} />
                         <Button
                           size="icon"
@@ -112,7 +116,7 @@ const CaiTable = async () => {
                         >
                           <Trash2 className="size-4" />
                         </Button>
-                      </form>
+                      </form> */}
                     </div>
                   </td>
                 </tr>

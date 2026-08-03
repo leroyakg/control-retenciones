@@ -27,7 +27,7 @@ const EditarRetencionForm = async ({
     // resolves to a valid option, even if it has since expired.
     supabase
       .from("cais")
-      .select("id, cai, bloque, prefijo, correlativo_actual")
+      .select("id, cai, bloque, prefijo, correlativo_actual, fecha_emision")
       .is("delete_time", null)
       .order("create_time", { ascending: false }),
   ]);

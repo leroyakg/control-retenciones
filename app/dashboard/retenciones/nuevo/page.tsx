@@ -11,7 +11,7 @@ const NuevaRetencionForm = async () => {
 
   const { data } = await supabase
     .from("cais")
-    .select("id, cai, bloque, prefijo, correlativo_actual, rango_inicial, rango_final, fecha_expiracion")
+    .select("id, cai, bloque, prefijo, correlativo_actual, rango_inicial, rango_final, fecha_emision, fecha_expiracion")
     .eq("estatus", "activo")
     .is("delete_time", null)
     .order("create_time", { ascending: false });

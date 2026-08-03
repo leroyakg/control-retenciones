@@ -75,6 +75,33 @@ export async function createRetencion(formData: FormData) {
 
   const supabase = await createClient();
 
+  // obtener el id del cai
+  const { data: caiData, error: caiError } = await supabase
+    .from("cais")
+    .select("id, correlativo_actual, rango_final, fecha_emision, fecha_expiracion")
+    .eq("cai", master.cai)
+    .single();
+
+  if (caiError) {
+    throw new Error(caiError.message);
+  }
+
+  if (!caiData) {
+    throw new Error(`No se encontró un CAI activo con el valor '${master.cai}'.`);
+  }
+
+  // if (master.fecha_emision && caiData.fecha_emision && caiData.fecha_emision < master.fecha_emision) {
+  //   throw new Error(`La fecha de emisión de la retención (${master.fecha_emision}) no puede ser anterior a la fecha de emisión del CAI (${caiData.fecha_emision}).`);
+  // }
+
+  // if (master.fecha_emision && master.fecha_emision > caiData.fecha_expiracion) {
+  //   throw new Error(`La fecha de emisión de la retención (${master.fecha_emision}) no puede ser posterior a la fecha de expiración del CAI (${caiData.fecha_expiracion}).`);
+  // }
+
+  // if (caiData.correlativo_actual > caiData.rango_final) {
+  //   throw new Error(`El CAI '${master.cai}' ha alcanzado su límite de correlativos y no puede generar más retenciones.`);
+  // }
+
   const { data: created, error } = await supabase
     .from("retenciones")
     .insert({ ...master, create_time: now, update_time: now })
@@ -103,17 +130,6 @@ export async function createRetencion(formData: FormData) {
     // Best-effort rollback of the parent so we don't leave an orphan.
     await supabase.from("retenciones").delete().eq("id", created.id);
     throw new Error(detError.message);
-  }
-
-  // obtener el id del cai
-  const { data: caiData, error: caiError } = await supabase
-    .from("cais")
-    .select("id, correlativo_actual, rango_final")
-    .eq("cai", master.cai)
-    .single();
-
-  if (caiError) {
-    throw new Error(caiError.message);
   }
 
   const correlativoActual = (caiData.correlativo_actual ?? 0) + 1;

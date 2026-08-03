@@ -23,7 +23,12 @@ type CaiOption = {
   bloque: string | null;
   prefijo: string | null;
   correlativo_actual: number | null;
+  fecha_emision: string | null;
 };
+
+// The CAI's emission date is the latest date a retención can carry, so it caps
+// both `fecha_documento` and `fecha_emision` in the date pickers.
+const fechaMaxima = (cai?: CaiOption) => cai?.fecha_emision?.slice(0, 10) ?? undefined;
 
 const formatCorrelativo = (cai?: CaiOption) => {
 
@@ -104,6 +109,8 @@ export function RetencionForm({
     setSelectedCai(value);
     setCorrelativo(formatCorrelativo(cais.find((c) => c.cai === value)));
   };
+
+  const maxFecha = fechaMaxima(cais.find((c) => c.cai === selectedCai));
 
   const updateRow = (id: number, patch: Partial<DetalleRow>) =>
     setRows((prev) =>
@@ -191,6 +198,7 @@ export function RetencionForm({
               id="fecha_documento"
               name="fecha_documento"
               type="date"
+              max={maxFecha}
               defaultValue={retencion?.fecha_documento?.slice(0, 10) ?? ""}
               required
             />
@@ -201,6 +209,7 @@ export function RetencionForm({
               id="fecha_emision"
               name="fecha_emision"
               type="date"
+              max={maxFecha}
               defaultValue={retencion?.fecha_emision?.slice(0, 10) ?? ""}
               required
             />

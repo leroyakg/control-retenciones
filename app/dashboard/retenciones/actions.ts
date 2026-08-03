@@ -121,7 +121,7 @@ export async function createRetencion(formData: FormData) {
   // let fechaExpiracion: string | null = null;
   let estatus = "activo";
 
-  if (caiData.rango_final <= correlativoActual) {
+  if (caiData.rango_final < correlativoActual) {
     // fechaExpiracion = new Date().toISOString();
     estatus = "agotado";
   }

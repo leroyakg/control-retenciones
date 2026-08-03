@@ -51,7 +51,7 @@ const NuevoCaiForm = async () => {
     timeZone: "America/Tegucigalpa",
   }).format(new Date());
 
-  if (latestCai.fecha_expiracion && latestCai.fecha_expiracion.slice(0, 10) >= todayStr) {
+  if (latestCai.fecha_expiracion && latestCai.fecha_expiracion.slice(0, 10) > todayStr) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
         El CAI más reciente aún está activo. Por favor, editá el CAI existente en lugar de crear uno nuevo.
@@ -59,7 +59,7 @@ const NuevoCaiForm = async () => {
     );
   }
 
-  if (latestCai.correlativo_actual <= latestCai.rango_final) {
+  if (latestCai.correlativo_actual < latestCai.rango_final) {
     return (
       <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
         El CAI más reciente aún tiene correlativos disponibles. Por favor, editá el CAI existente en lugar de crear uno nuevo.

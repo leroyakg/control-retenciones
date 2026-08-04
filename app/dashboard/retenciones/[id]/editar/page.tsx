@@ -23,11 +23,9 @@ const EditarRetencionForm = async ({
       .select("*")
       .eq("retencion_id", id)
       .order("id", { ascending: true }),
-    // Fetch every CAI (not just active) so the retención's own CAI always
-    // resolves to a valid option, even if it has since expired.
     supabase
       .from("cais")
-      .select("id, cai, bloque, prefijo, correlativo_actual, fecha_emision")
+      .select("id, cai, bloque, prefijo, correlativo_actual, fecha_emision, fecha_expiracion")
       .is("delete_time", null)
       .order("create_time", { ascending: false }),
   ]);
@@ -49,11 +47,6 @@ const EditarRetencionForm = async ({
   const cais = caisRes.data ?? [];
 
   const action = updateRetencion.bind(null, retencion.id);
-
-  console.log({
-    retencion,
-    detalles
-  })
 
   return (
     <RetencionForm

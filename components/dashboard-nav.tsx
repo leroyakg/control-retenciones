@@ -16,7 +16,7 @@ const items = [
   // { href: "/dashboard/historial", label: "Historial", icon: History },
   { href: "/dashboard/retenciones", label: "Retenciones", icon: ReceiptText },
   { href: "/dashboard/cai", label: "CAI", icon: ScrollText },
-  { href: "/dashboard/reportes", label: "Reportes", icon: BarChart3 },
+  // { href: "/dashboard/reportes", label: "Reportes", icon: BarChart3 },
 ];
 
 export function DashboardNav() {

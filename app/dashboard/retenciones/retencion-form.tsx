@@ -24,11 +24,12 @@ type CaiOption = {
   prefijo: string | null;
   correlativo_actual: number | null;
   fecha_emision: string | null;
+  fecha_expiracion: string | null;
 };
 
 // The CAI's emission date is the latest date a retención can carry, so it caps
-// both `fecha_documento` and `fecha_emision` in the date pickers.
-const fechaMaxima = (cai?: CaiOption) => cai?.fecha_emision?.slice(0, 10) ?? undefined;
+// both `fecha_documento` and `fecha_expiracion` in the date pickers.
+const fechaMaxima = (cai?: CaiOption) => cai?.fecha_expiracion?.slice(0, 10) ?? undefined;
 
 const formatCorrelativo = (cai?: CaiOption) => {
 
@@ -111,6 +112,8 @@ export function RetencionForm({
   };
 
   const maxFecha = fechaMaxima(cais.find((c) => c.cai === selectedCai));
+
+  console.log({ maxFecha, selectedCai })
 
   const updateRow = (id: number, patch: Partial<DetalleRow>) =>
     setRows((prev) =>
@@ -224,6 +227,7 @@ export function RetencionForm({
               name="cai_proveedor"
               placeholder="CAI del proveedor"
               defaultValue={retencion?.cai_proveedor ?? ""}
+              required
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -233,6 +237,7 @@ export function RetencionForm({
               name="correlativo_proveedor"
               placeholder="Correlativo del proveedor"
               defaultValue={retencion?.correlativo_proveedor ?? ""}
+              required
             />
           </div>
         </div>

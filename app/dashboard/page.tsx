@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
-import { ReceiptText, AlertTriangle } from "lucide-react";
+import { ReceiptText, AlertTriangle, AlertCircle } from "lucide-react";
 
 // const currency = new Intl.NumberFormat("es-HN", {
 //   style: "currency",
@@ -76,39 +76,69 @@ const SummaryCards = async () => {
   const todayStr = today.toISOString().slice(0, 10);
   const soonStr = soon.toISOString().slice(0, 10);
 
-  const [retenciones, caisPorVencer] =
+  const [retencionesDelMes, caiPorVencer, caisVencidos, caiActivo] =
     await Promise.all([
       supabase
         .from("retenciones")
+        .select("*", { count: "exact", head: true })
+        .gte("fecha_emision", todayStr.slice(0, 7) + "-01")
+        .lt("fecha_emision", todayStr.slice(0, 7) + "-30"),
+      supabase
+        .from("cais")
         .select("*")
-        .is("deleted_at", null),
+        .eq("estatus", "activo")
+        .gte("fecha_expiracion", todayStr)
+        .lte("fecha_expiracion", soonStr),
       supabase
         .from("cais")
         .select("*", { count: "exact", head: true })
-        .eq("status", "activo")
-        .is("deleted_at", null)
-        .gte("expiration_date", todayStr)
-        .lte("expiration_date", soonStr),
+        .neq("estatus", "activo"),
+      supabase
+        .from("cais")
+        .select("*")
+        .eq("estatus", "activo")
     ]);
+
+  console.log({ retencionesDelMes, caiPorVencer, todayStr, soonStr });
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
       <StatCard
-        title="Retenciones activas"
-        value={retenciones.count ?? 0}
+        title="Retenciones Del Mes"
+        value={retencionesDelMes.count ?? 0}
         hint="Retenciones registradas"
+        href="/dashboard/retenciones"
         icon={<ReceiptText className="size-4" />}
       />
       <StatCard
         title="CAI por vencer"
-        value={caisPorVencer.count ?? 0}
-        hint="Vencen en los próximos 30 días"
+        value={caiPorVencer.data?.[0]?.fecha_expiracion ?? "—"}
+        hint={`Vencen en los próximos ${Math.ceil(
+          (new Date(caiPorVencer.data?.[0]?.fecha_expiracion ?? soonStr).getTime() -
+            today.getTime()) /
+          (1000 * 60 * 60 * 24)
+        )} días`}
         icon={<AlertTriangle className="size-4" />}
+        href="/dashboard/cai"
+      />
+      <StatCard
+        title="CAI vencidos y/o inactivos"
+        value={caisVencidos.count ?? 0}
+        hint="Vencieron"
+        icon={<AlertCircle className="size-4" />}
+        href="/dashboard/cai"
+      />
+      <StatCard
+        title="CAI activo"
+        value={caiActivo.data?.[0]?.cai ?? "—"}
+        hint="CAI actualmente en uso"
+        icon={<ReceiptText className="size-4" />}
         href="/dashboard/cai"
       />
     </div>
   );
 };
+
 
 const RetencionesHistoric = async () => {
   const supabase = await createClient();
@@ -118,10 +148,9 @@ const RetencionesHistoric = async () => {
     .select(
       "id, rtn, cai, fecha_documento, fecha_emision, proveedor, correlativo",
     )
-    // .is("deleted_at", null)
     .order("fecha_documento", { ascending: false, nullsFirst: false })
     .order("fecha_emision", { ascending: false })
-    .limit(25);
+    .limit(15)
 
   const retenciones = (data ?? []) as unknown as RetencionRow[];
 
@@ -144,12 +173,11 @@ const RetencionesHistoric = async () => {
             <table className="w-full text-sm">
               <thead className="border-b border-foreground/10 text-left text-foreground/60">
                 <tr>
-                  <th className="p-3 font-medium">Retención</th>
+                  {/* <th className="p-3 font-medium">Retención</th> */}
                   <th className="p-3 font-medium">Negocio</th>
                   <th className="p-3 font-medium">No. Factura</th>
                   <th className="p-3 font-medium">Fecha</th>
-                  <th className="p-3 font-medium text-right">Monto</th>
-                  <th className="p-3 font-medium text-right">Retenido</th>
+                  <th className="p-3 font-medium text-right">Correlativo</th>
                 </tr>
               </thead>
               <tbody>
@@ -158,7 +186,7 @@ const RetencionesHistoric = async () => {
                     key={r.id}
                     className="border-b border-foreground/5 last:border-0 hover:bg-accent/40"
                   >
-                    <td className="p-3 font-mono text-xs">{r.id}</td>
+                    {/* <td className="p-3 font-mono text-xs">{r.id}</td> */}
                     <td className="p-3">{r.proveedor ?? "—"}</td>
                     <td className="p-3 font-mono text-xs text-foreground/70">
                       {r.correlativo}
@@ -166,9 +194,10 @@ const RetencionesHistoric = async () => {
                     <td className="p-3 text-foreground/70">
                       {formatDate(r.fecha_documento)}
                     </td>
-                    <td className="p-3 text-foreground/70">
-                      {formatDate(r.fecha_emision)}
+                    <td className="p-3 text-foreground/70 text-right">
+                      {r.correlativo}
                     </td>
+
                   </tr>
                 ))}
               </tbody>

@@ -4,19 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
-import { ReporteTable, type ReporteFilters } from "./reporte-table";
+import { ReporteTable } from "./reporte-table";
+import { parseFilters, type ReporteSearchParamsValues } from "./data";
 
-type ReporteSearchParams = Promise<{
-  desde?: string;
-  hasta?: string;
-  comprobante?: string;
-  proveedor?: string;
-  base_min?: string;
-  base_max?: string;
-  ret_min?: string;
-  ret_max?: string;
-  anuladas?: string;
-}>;
+type ReporteSearchParams = Promise<ReporteSearchParamsValues>;
 
 const ReportesContent = async ({
   searchParams,
@@ -24,18 +15,7 @@ const ReportesContent = async ({
   searchParams: ReporteSearchParams;
 }) => {
   const params = await searchParams;
-
-  const filters: ReporteFilters = {
-    desde: params.desde ?? "",
-    hasta: params.hasta ?? "",
-    comprobante: params.comprobante ?? "",
-    proveedor: params.proveedor ?? "",
-    baseMin: params.base_min ?? "",
-    baseMax: params.base_max ?? "",
-    retMin: params.ret_min ?? "",
-    retMax: params.ret_max ?? "",
-    anuladas: params.anuladas === "on",
-  };
+  const filters = parseFilters(params);
 
   const hasFilters = Object.values(params).some((v) => v);
 

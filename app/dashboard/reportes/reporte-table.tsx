@@ -88,28 +88,29 @@ export async function ReporteTable({ filters }: { filters: ReporteFilters }) {
                 <td className="p-3 text-foreground/70">
                   {formatDate(r.fecha_emision)}
                 </td>
-                <td className="p-3 font-mono text-xs text-foreground/70">
-                  {r.correlativo ?? "—"}
+                <td className="p-3 text-foreground/70">
+                  {/* get the last 8 digits of the correlativo */}
+                  {r.correlativo ? r.correlativo.slice(-8) : "—"}
                   {r.fecha_anulacion && (
-                    <span className="ml-2 rounded bg-destructive/10 px-1.5 py-0.5 text-[10px] font-sans font-medium text-destructive">
+                    <span className="ml-2 rounded bg-destructive/10 px-1.5 py-0.5 text-[10px] font-sans text-destructive">
                       Anulada
                     </span>
                   )}
                 </td>
-                <td className="p-3 font-medium">{r.proveedor}</td>
-                <td className="p-3 text-right tabular-nums">
+                <td className="p-3 text-foreground/70">{r.proveedor}</td>
+                <td className="p-3 text-right text-foreground/70">
                   {currency.format(r.base)}
                 </td>
-                <td className="p-3 text-right font-mono text-xs text-foreground/70">
+                <td className="p-3 text-right text-foreground/70">
                   {formatPct(r.base, r.retenido)}
                 </td>
-                <td className="p-3 text-right tabular-nums">
+                <td className="p-3 text-right text-foreground/70">
                   {currency.format(r.retenido)}
                 </td>
               </tr>
             ))}
           </tbody>
-          <tfoot className="border-t border-foreground/10 bg-accent/30 font-medium">
+          <tfoot className="border-t border-foreground/10 bg-accent/30">
             <tr>
               <td className="p-3" colSpan={3}>
                 Total · {rows.length}{" "}

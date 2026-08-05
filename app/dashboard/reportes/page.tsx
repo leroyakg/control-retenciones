@@ -5,7 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import { ReporteTable } from "./reporte-table";
-import { parseFilters, type ReporteSearchParamsValues } from "./data";
+import {
+  parseFilters,
+  TIPOS_RETENCION,
+  type ReporteSearchParamsValues,
+} from "./data";
+
+const selectClass =
+  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 type ReporteSearchParams = Promise<ReporteSearchParamsValues>;
 
@@ -58,6 +65,22 @@ const ReportesContent = async ({
               defaultValue={filters.proveedor}
               placeholder="Nombre del proveedor"
             />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="tipo">Tipo de retención</Label>
+            <select
+              id="tipo"
+              name="tipo"
+              defaultValue={filters.tipo}
+              className={selectClass}
+            >
+              <option value="">Todos</option>
+              {TIPOS_RETENCION.map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {tipo}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="base_min">Base imponible mín.</Label>

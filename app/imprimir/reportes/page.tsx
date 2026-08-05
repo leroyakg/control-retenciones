@@ -58,18 +58,18 @@ export default async function ImprimirReportePage({
 
   const filtroFechas =
     filters.desde || filters.hasta
-      ? `Del ${filters.desde ? formatDate(filters.desde) : "inicio"} al ${
-          filters.hasta ? formatDate(filters.hasta) : "presente"
-        }`
+      ? `Del ${filters.desde ? formatDate(filters.desde) : "inicio"} al ${filters.hasta ? formatDate(filters.hasta) : "presente"
+      }`
       : "Todas las fechas";
 
   const otrosFiltros = [
     filters.comprobante && `Comprobante: ${filters.comprobante}`,
     filters.proveedor && `Proveedor: ${filters.proveedor}`,
+    filters.tipo && `Tipo: ${filters.tipo}`,
     (filters.baseMin || filters.baseMax) &&
-      `Base imponible: ${filters.baseMin || "0"} – ${filters.baseMax || "∞"}`,
+    `Base imponible: ${filters.baseMin || "0"} – ${filters.baseMax || "∞"}`,
     (filters.retMin || filters.retMax) &&
-      `Valor retenido: ${filters.retMin || "0"} – ${filters.retMax || "∞"}`,
+    `Valor retenido: ${filters.retMin || "0"} – ${filters.retMax || "∞"}`,
     filters.anuladas && "Incluye anuladas",
   ].filter(Boolean);
 
@@ -136,25 +136,26 @@ export default async function ImprimirReportePage({
                   key={r.id}
                   className="border-b border-foreground/5 last:border-0"
                 >
-                  <td className="p-2 text-foreground/70">
+                  <td className="p-2 text-xs text-foreground/70">
                     {formatDate(r.fecha_emision)}
                   </td>
-                  <td className="p-2 font-mono text-xs text-foreground/70">
-                    {r.correlativo ?? "—"}
+                  <td className="p-2 text-xs text-foreground/70">
+                    {/* Mostrar solo los ultimos 8 digitos del correlativo */}
+                    {r.correlativo ? r.correlativo.slice(-8) : "—"}
                     {r.fecha_anulacion && (
                       <span className="ml-2 font-sans font-medium text-destructive">
                         (Anulada)
                       </span>
                     )}
                   </td>
-                  <td className="p-2">{r.proveedor}</td>
-                  <td className="p-2 text-right tabular-nums">
+                  <td className="p-2 text-xs text-foreground/70">{r.proveedor}</td>
+                  <td className="p-2 text-xs text-right text-foreground/70">
                     {currency.format(r.base)}
                   </td>
-                  <td className="p-2 text-right tabular-nums text-xs text-foreground/70">
+                  <td className="p-2 text-xs text-right text-foreground/70">
                     {formatPct(r.base, r.retenido)}
                   </td>
-                  <td className="p-2 text-right tabular-nums">
+                  <td className="p-2 text-xs text-right text-foreground/70">
                     {currency.format(r.retenido)}
                   </td>
                 </tr>

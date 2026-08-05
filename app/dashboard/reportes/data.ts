@@ -3,11 +3,19 @@ import type { RetencionRecord } from "../retenciones/types";
 
 export const MAX_ROWS = 1000;
 
+// Debe coincidir con los CONCEPTOS del formulario de retenciones.
+export const TIPOS_RETENCION = [
+  "Ret por Servicios Honorarios Art # 50 I.S.R",
+  "Ret Anticipo 1% Art # 19 DEC # 17 - 2010",
+  "Ret I.S.V Articulo # 8 I.S.V",
+] as const;
+
 export type ReporteFilters = {
   desde: string;
   hasta: string;
   comprobante: string;
   proveedor: string;
+  tipo: string;
   baseMin: string;
   baseMax: string;
   retMin: string;
@@ -20,6 +28,7 @@ export type ReporteSearchParamsValues = {
   hasta?: string;
   comprobante?: string;
   proveedor?: string;
+  tipo?: string;
   base_min?: string;
   base_max?: string;
   ret_min?: string;
@@ -56,6 +65,7 @@ export function parseFilters(params: ReporteSearchParamsValues): ReporteFilters 
     hasta: params.hasta ?? "",
     comprobante: params.comprobante ?? "",
     proveedor: params.proveedor ?? "",
+    tipo: params.tipo ?? "",
     baseMin: params.base_min ?? "",
     baseMax: params.base_max ?? "",
     retMin: params.ret_min ?? "",
@@ -70,6 +80,7 @@ export function filtersToQueryString(filters: ReporteFilters): string {
   if (filters.hasta) params.set("hasta", filters.hasta);
   if (filters.comprobante) params.set("comprobante", filters.comprobante);
   if (filters.proveedor) params.set("proveedor", filters.proveedor);
+  if (filters.tipo) params.set("tipo", filters.tipo);
   if (filters.baseMin) params.set("base_min", filters.baseMin);
   if (filters.baseMax) params.set("base_max", filters.baseMax);
   if (filters.retMin) params.set("ret_min", filters.retMin);
@@ -94,15 +105,24 @@ export async function fetchReporte(
 ): Promise<ReporteResult> {
   const supabase = await createClient();
 
+  // With a tipo filter, use an inner join so that (a) only retenciones that
+  // tienen un detalle de ese tipo aparecen y (b) los montos sumados sean solo
+  // los de ese tipo de retención.
+  const detalleSelect = filters.tipo
+    ? "retenciones_detalle!inner(base_imponible, importe_total)"
+    : "retenciones_detalle(base_imponible, importe_total)";
+
   let query = supabase
     .from("retenciones")
     .select(
-      "id, proveedor, rtn, correlativo, fecha_emision, fecha_anulacion, retenciones_detalle(base_imponible, importe_total)",
+      `id, proveedor, rtn, correlativo, fecha_emision, fecha_anulacion, ${detalleSelect}`,
     )
     .order("fecha_emision", { ascending: false })
     .order("correlativo", { ascending: false })
     .limit(MAX_ROWS);
 
+  if (filters.tipo)
+    query = query.eq("retenciones_detalle.descripcion", filters.tipo);
   if (filters.desde) query = query.gte("fecha_emision", filters.desde);
   if (filters.hasta) query = query.lte("fecha_emision", filters.hasta);
   if (filters.comprobante)

@@ -96,7 +96,7 @@ export default async function ImprimirReportePage({
           <h2 className="mt-2 text-base font-semibold">
             Reporte de Retenciones
           </h2>
-          <p className="text-xs leading-snug text-foreground/70">
+          {/* <p className="text-xs leading-snug text-foreground/70">
             {filtroFechas}
             {otrosFiltros.length > 0 && (
               <>
@@ -104,7 +104,7 @@ export default async function ImprimirReportePage({
                 {otrosFiltros.join(" · ")}
               </>
             )}
-          </p>
+          </p> */}
         </header>
 
         {truncated && (
@@ -150,13 +150,13 @@ export default async function ImprimirReportePage({
                   </td>
                   <td className="p-2 text-xs text-foreground/70">{r.proveedor}</td>
                   <td className="p-2 text-xs text-right text-foreground/70">
-                    {currency.format(r.base)}
+                    {r.fecha_anulacion ? "—" : currency.format(r.base)}
                   </td>
                   <td className="p-2 text-xs text-right text-foreground/70">
-                    {formatPct(r.base, r.retenido)}
+                    {r.fecha_anulacion ? "—" : formatPct(r.base, r.retenido)}
                   </td>
                   <td className="p-2 text-xs text-right text-foreground/70">
-                    {currency.format(r.retenido)}
+                    {r.fecha_anulacion ? "—" : currency.format(r.retenido)}
                   </td>
                 </tr>
               ))}

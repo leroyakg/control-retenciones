@@ -99,13 +99,21 @@ export async function ReporteTable({ filters }: { filters: ReporteFilters }) {
                 </td>
                 <td className="p-3 text-foreground/70">{r.proveedor}</td>
                 <td className="p-3 text-right text-foreground/70">
-                  {currency.format(r.base)}
+                  {/* if is anulado, add a stripe to the value */}
+                  {r.fecha_anulacion ?
+                    " - " :// <span className="text-foreground/70 text-strikethrough">( {currency.format(r.base)} )</span> :
+                    currency.format(r.base)
+                  }
                 </td>
                 <td className="p-3 text-right text-foreground/70">
-                  {formatPct(r.base, r.retenido)}
+                  {r.fecha_anulacion ?
+                    " - " : // <span className="text-foreground/70 text-strikethrough">( {formatPct(r.base, r.retenido)} )</span> : 
+                    formatPct(r.base, r.retenido)}
                 </td>
                 <td className="p-3 text-right text-foreground/70">
-                  {currency.format(r.retenido)}
+                  {r.fecha_anulacion ?
+                    " - " : // <span className="text-foreground/70 text-strikethrough">( {currency.format(r.retenido)} )</span> : 
+                    currency.format(r.retenido)}
                 </td>
               </tr>
             ))}

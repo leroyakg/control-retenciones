@@ -56,7 +56,7 @@ export type ReporteResult = {
 };
 
 type ReporteQueryRow = RetencionRecord & {
-  retenciones_detalle: { base_imponible: number; importe_total: number }[];
+  retenciones_detalle: { base_imponible: number; importe_total: number; fecha_anulacion: string | null }[];
 };
 
 export function parseFilters(params: ReporteSearchParamsValues): ReporteFilters {
@@ -117,8 +117,7 @@ export async function fetchReporte(
     .select(
       `id, proveedor, rtn, correlativo, fecha_emision, fecha_anulacion, ${detalleSelect}`,
     )
-    .order("fecha_emision", { ascending: false })
-    .order("correlativo", { ascending: false })
+    .order("create_time", { ascending: true })
     .limit(MAX_ROWS);
 
   if (filters.tipo)
@@ -153,11 +152,11 @@ export async function fetchReporte(
   const rows = ((data ?? []) as unknown as ReporteQueryRow[])
     .map((r) => {
       const base = r.retenciones_detalle.reduce(
-        (sum, d) => sum + (Number(d.base_imponible) || 0),
+        (sum, d) => sum + (d.fecha_anulacion ? 0 : Number(d.base_imponible) || 0),
         0,
       );
       const retenido = r.retenciones_detalle.reduce(
-        (sum, d) => sum + (Number(d.importe_total) || 0),
+        (sum, d) => sum + (d.fecha_anulacion ? 0 : Number(d.importe_total) || 0),
         0,
       );
       return {

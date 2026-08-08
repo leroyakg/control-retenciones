@@ -96,7 +96,7 @@ export default async function ImprimirReportePage({
           <h2 className="mt-2 text-base font-semibold">
             Reporte de Retenciones
           </h2>
-          {/* <p className="text-xs leading-snug text-foreground/70">
+          <p className="text-xs leading-snug text-foreground/70">
             {filtroFechas}
             {otrosFiltros.length > 0 && (
               <>
@@ -104,7 +104,7 @@ export default async function ImprimirReportePage({
                 {otrosFiltros.join(" · ")}
               </>
             )}
-          </p> */}
+          </p>
         </header>
 
         {truncated && (

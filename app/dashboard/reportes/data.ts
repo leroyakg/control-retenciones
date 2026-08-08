@@ -152,11 +152,11 @@ export async function fetchReporte(
   const rows = ((data ?? []) as unknown as ReporteQueryRow[])
     .map((r) => {
       const base = r.retenciones_detalle.reduce(
-        (sum, d) => sum + (d.fecha_anulacion ? 0 : Number(d.base_imponible) || 0),
+        (sum, d) => sum + Number(d.base_imponible),
         0,
       );
       const retenido = r.retenciones_detalle.reduce(
-        (sum, d) => sum + (d.fecha_anulacion ? 0 : Number(d.importe_total) || 0),
+        (sum, d) => sum + Number(d.importe_total),
         0,
       );
       return {
@@ -175,14 +175,15 @@ export async function fetchReporte(
       if (baseMax !== null && r.base > baseMax) return false;
       if (retMin !== null && r.retenido < retMin) return false;
       if (retMax !== null && r.retenido > retMax) return false;
+      if (r.fecha_anulacion && !filters.anuladas) return false;
       return true;
     });
 
   return {
     error: null,
     rows,
-    totalBase: rows.reduce((sum, r) => sum + r.base, 0),
-    totalRetenido: rows.reduce((sum, r) => sum + r.retenido, 0),
+    totalBase: rows.filter((r) => !r.fecha_anulacion).reduce((sum, r) => sum + r.base, 0),
+    totalRetenido: rows.filter((r) => !r.fecha_anulacion).reduce((sum, r) => sum + r.retenido, 0),
     truncated: (data?.length ?? 0) >= MAX_ROWS,
   };
 }

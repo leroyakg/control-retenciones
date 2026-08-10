@@ -36,7 +36,6 @@ const NuevoCaiForm = async () => {
         editMode={true}
         action={createCai}
         submitLabel="Guardar"
-        presetValues={null}
         previousCai={null}
       />
     );

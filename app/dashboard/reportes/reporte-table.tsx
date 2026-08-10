@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
+import { FileDown, FileSpreadsheet } from "lucide-react";
 import {
   fetchReporte,
   filtersToQueryString,
@@ -48,6 +48,9 @@ export async function ReporteTable({ filters }: { filters: ReporteFilters }) {
 
   const qs = filtersToQueryString(filters);
   const exportHref = qs ? `/imprimir/reportes?${qs}` : "/imprimir/reportes";
+  const exportExcelHref = qs
+    ? `/api/reportes/export?${qs}`
+    : "/api/reportes/export";
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,7 +61,13 @@ export async function ReporteTable({ filters }: { filters: ReporteFilters }) {
         </p>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <Button asChild variant="outline">
+          <a href={exportExcelHref} download>
+            <FileSpreadsheet className="size-4" />
+            Exportar Excel
+          </a>
+        </Button>
         <Button asChild variant="outline">
           <Link href={exportHref} prefetch={false} target="_blank">
             <FileDown className="size-4" />

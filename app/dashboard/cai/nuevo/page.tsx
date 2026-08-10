@@ -29,13 +29,18 @@ const NuevoCaiForm = async () => {
 
   const cais = caisRes.data ?? [];
 
-  // if (cais.length > 0) {
-  //   return (
-  //     <div className="rounded-md border border-foreground/10 p-10 text-center text-sm text-foreground/60">
-  //       Ya existe un CAI registrado. Por favor, editá el CAI existente en lugar de crear uno nuevo.
-  //     </div>
-  //   );
-  // }
+  // If there are no CAIs, we can render the form for creating a new one
+  if (cais.length === 0) {
+    return (
+      <CaiForm
+        editMode={true}
+        action={createCai}
+        submitLabel="Guardar"
+        presetValues={null}
+        previousCai={null}
+      />
+    );
+  }
 
   const latestCai = cais[0];
 

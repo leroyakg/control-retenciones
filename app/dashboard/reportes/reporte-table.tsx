@@ -69,7 +69,7 @@ export async function ReporteTable({ filters }: { filters: ReporteFilters }) {
           </a>
         </Button>
         <Button asChild variant="outline">
-          <Link href={exportHref} prefetch={false} target="_blank">
+          <Link href={exportHref} prefetch={false}>
             <FileDown className="size-4" />
             Exportar PDF
           </Link>

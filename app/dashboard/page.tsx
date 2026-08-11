@@ -174,9 +174,11 @@ const RetencionesHistoric = async () => {
               <thead className="border-b border-foreground/10 text-left text-foreground/60">
                 <tr>
                   {/* <th className="p-3 font-medium">Retención</th> */}
-                  <th className="p-3 font-medium">Negocio</th>
-                  <th className="p-3 font-medium">No. Factura</th>
-                  <th className="p-3 font-medium">Fecha</th>
+                  <th className="p-3 font-medium">Proveedor</th>
+                  <th className="p-3 font-medium">Rtn</th>
+                  <th className="p-3 font-medium">Cai</th>
+                  <th className="p-3 font-medium">Fecha Documento</th>
+                  <th className="p-3 font-medium">Fecha Emision</th>
                   <th className="p-3 font-medium text-right">Correlativo</th>
                 </tr>
               </thead>
@@ -189,10 +191,16 @@ const RetencionesHistoric = async () => {
                     {/* <td className="p-3 font-mono text-xs">{r.id}</td> */}
                     <td className="p-3">{r.proveedor ?? "—"}</td>
                     <td className="p-3 font-mono text-xs text-foreground/70">
-                      {r.correlativo}
+                      {r.rtn}
+                    </td>
+                    <td className="p-3 text-foreground/70">
+                      {r.cai}
                     </td>
                     <td className="p-3 text-foreground/70">
                       {formatDate(r.fecha_documento)}
+                    </td>
+                    <td className="p-3 text-foreground/70">
+                      {formatDate(r.fecha_emision)}
                     </td>
                     <td className="p-3 text-foreground/70 text-right">
                       {r.correlativo}

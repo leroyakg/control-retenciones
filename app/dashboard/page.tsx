@@ -29,6 +29,8 @@ type RetencionRow = {
   fecha_emision: string;
   proveedor: string | null;
   correlativo: string | null;
+  correlativo_proveedor: string | null;
+  cai_proveedor: string | null;
 };
 
 const StatCard = ({
@@ -146,7 +148,7 @@ const RetencionesHistoric = async () => {
   const { data, error } = await supabase
     .from("retenciones")
     .select(
-      "id, rtn, cai, fecha_documento, fecha_emision, proveedor, correlativo",
+      "id, rtn, cai, fecha_documento, fecha_emision, proveedor, correlativo, correlativo_proveedor, cai_proveedor",
     )
     .order("fecha_documento", { ascending: false, nullsFirst: false })
     .order("fecha_emision", { ascending: false })
@@ -176,6 +178,7 @@ const RetencionesHistoric = async () => {
                   {/* <th className="p-3 font-medium">Retención</th> */}
                   <th className="p-3 font-medium">Proveedor</th>
                   <th className="p-3 font-medium">Rtn</th>
+                  <th className="p-3 font-medium">Correlativo Proveedor</th>
                   <th className="p-3 font-medium">Cai</th>
                   <th className="p-3 font-medium">Fecha Documento</th>
                   <th className="p-3 font-medium">Fecha Emision</th>
@@ -192,6 +195,9 @@ const RetencionesHistoric = async () => {
                     <td className="p-3">{r.proveedor ?? "—"}</td>
                     <td className="p-3 font-mono text-xs text-foreground/70">
                       {r.rtn}
+                    </td>
+                    <td className="p-3 font-mono text-xs text-foreground/70">
+                      {r.correlativo_proveedor ?? "—"}
                     </td>
                     <td className="p-3 text-foreground/70">
                       {r.cai}

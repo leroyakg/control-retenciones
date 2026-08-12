@@ -9,6 +9,9 @@ import { RetencionForm } from "../retencion-form";
 const NuevaRetencionForm = async () => {
   const supabase = await createClient();
 
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+
   const { data } = await supabase
     .from("cais")
     .select("id, cai, bloque, prefijo, correlativo_actual, rango_inicial, rango_final, fecha_emision, fecha_expiracion")
@@ -57,7 +60,7 @@ const NuevaRetencionForm = async () => {
     );
   }
 
-  return <RetencionForm action={createRetencion} cais={data ?? []} />;
+  return <RetencionForm action={createRetencion} cais={data ?? []} userId={userId} />;
 };
 
 export default function NuevaRetencionPage() {

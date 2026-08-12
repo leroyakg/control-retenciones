@@ -86,12 +86,14 @@ export function RetencionForm({
   retencion,
   detalles,
   submitLabel = "Guardar",
+  userId,
 }: {
   action: (formData: FormData) => void;
   cais: CaiOption[];
   retencion?: RetencionRecord;
   detalles?: RetencionDetalleRecord[];
   submitLabel?: string;
+  userId?: string;
 }) {
   const [rows, setRows] = useState<DetalleRow[]>(() =>
     detalles && detalles.length > 0 ? detalles.map(rowFromDetalle) : [newRow()],
@@ -132,6 +134,8 @@ export function RetencionForm({
 
   return (
     <form action={action} className="flex flex-col gap-8">
+      {userId && <input type="hidden" name="creado_por" value={userId} />}
+
       {/* ---- Retención (maestro) ---- */}
       <section className="flex flex-col gap-5">
         <h2 className="text-lg font-medium">Comprobante de retención</h2>

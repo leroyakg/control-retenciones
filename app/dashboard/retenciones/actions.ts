@@ -102,9 +102,11 @@ export async function createRetencion(formData: FormData) {
   //   throw new Error(`El CAI '${master.cai}' ha alcanzado su límite de correlativos y no puede generar más retenciones.`);
   // }
 
+  const creadoPor = (formData.get("creado_por") as string)?.trim() || null;
+
   const { data: created, error } = await supabase
     .from("retenciones")
-    .insert({ ...master, create_time: now, update_time: now })
+    .insert({ ...master, creado_por: creadoPor, create_time: now, update_time: now })
     .select("id")
     .single();
 
@@ -217,9 +219,13 @@ export async function validarRetencion(id: number) {
   const now = new Date().toISOString();
   const supabase = await createClient();
 
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+
+
   const { error } = await supabase
     .from("retenciones")
-    .update({ procesado: true, update_time: now })
+    .update({ procesado: true, aprobado_por: userId, fecha_aprobado: now, update_time: now })
     .eq("id", id);
 
   if (error) {
@@ -235,9 +241,12 @@ export async function anularRetencion(id: number) {
   const now = new Date().toISOString();
   const supabase = await createClient();
 
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+
   const { error } = await supabase
     .from("retenciones")
-    .update({ fecha_anulacion: now, update_time: now })
+    .update({ fecha_anulacion: now, anulado_por: userId, update_time: now })
     .eq("id", id);
 
   if (error) {

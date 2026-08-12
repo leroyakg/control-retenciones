@@ -236,11 +236,21 @@ const cardsFallback = (
   </div>
 );
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const user =
+    claims?.claims?.user_metadata?.first_name ??
+    claims?.claims?.user_metadata?.full_name ??
+    claims?.claims?.email ??
+    null;
+
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">
+          {user ? `Bienvenido, ${user}` : "Dashboard"}
+        </h1>
         <p className="text-sm text-foreground/60">
           Resumen general del control de retenciones.
         </p>

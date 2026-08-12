@@ -36,11 +36,13 @@ export function PrintControls({
   retencionId,
   procesado,
   anulado,
+  userName,
 }: {
   children: ReactNode;
   retencionId: number;
   procesado: boolean;
   anulado: boolean;
+  userName: string;
 }) {
   const [isAnulado, setIsAnulado] = useState(anulado);
   const [copyType, setCopyType] = useState<CopyType>(
@@ -49,6 +51,7 @@ export function PrintControls({
   const [isProcesado, setIsProcesado] = useState(procesado);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [userNameState, setUserNameState] = useState(userName);
 
   const printOptions = isAnulado ? ANULADO_OPTIONS : PRINT_OPTIONS;
 
@@ -163,6 +166,9 @@ export function PrintControls({
             <span>Copia: Obligado Tributario Emisor</span>
           </p>
           <br />
+          <p className="text-sm text-foreground/60">
+            Documento impreso por: <span className="font-medium">{userNameState}</span>
+          </p>
         </div>
       </div>
     </>

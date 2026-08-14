@@ -38,6 +38,7 @@ export function PrintControls({
   anulado,
   aprobadoPor,
   anuladoPor,
+  user
 }: {
   children: ReactNode;
   retencionId: number;
@@ -45,6 +46,7 @@ export function PrintControls({
   anulado: boolean;
   aprobadoPor: string | null;
   anuladoPor: string | null;
+  user: string;
 }) {
   const [isAnulado, setIsAnulado] = useState(anulado);
   const [copyType, setCopyType] = useState<CopyType>(
@@ -55,7 +57,7 @@ export function PrintControls({
   const [isPending, startTransition] = useTransition();
   const [aprobadoPorState, setAprobadoPorState] = useState(aprobadoPor);
   const [anuladoPorState, setAnuladoPorState] = useState(anuladoPor);
-
+  
   const printOptions = isAnulado ? ANULADO_OPTIONS : PRINT_OPTIONS;
 
   function handlePrint(type: CopyType) {
@@ -70,6 +72,8 @@ export function PrintControls({
       try {
         await validarRetencion(retencionId);
         setIsProcesado(true);
+        setAprobadoPorState(aprobadoPor ?? null);
+        setAnuladoPorState(null);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "No se pudo validar el documento.",
@@ -92,6 +96,7 @@ export function PrintControls({
         await anularRetencion(retencionId);
         setIsAnulado(true);
         setCopyType("anulado");
+        setAnuladoPorState(anuladoPor ?? null);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "No se pudo anular el documento.",
@@ -172,11 +177,12 @@ export function PrintControls({
           </p>
 
           <p className="text-sm text-foreground/60">
-            Documento generado por: <span className="font-medium">{aprobadoPorState}</span>
+            Documento generado por: <span className="font-medium">{aprobadoPorState ?? user}</span>
           </p>
+
           {isAnulado && (
             <p className="text-sm font-medium text-destructive">
-              Documento anulado por <span className="font-medium">{anuladoPorState}</span>
+              Documento anulado por <span className="font-medium">{anuladoPorState ?? user}</span>
             </p>
           )}
           <p className="text-sm text-foreground/60">

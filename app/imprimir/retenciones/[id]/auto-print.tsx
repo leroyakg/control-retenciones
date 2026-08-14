@@ -36,13 +36,15 @@ export function PrintControls({
   retencionId,
   procesado,
   anulado,
-  userName,
+  aprobadoPor,
+  anuladoPor,
 }: {
   children: ReactNode;
   retencionId: number;
   procesado: boolean;
   anulado: boolean;
-  userName: string;
+  aprobadoPor: string | null;
+  anuladoPor: string | null;
 }) {
   const [isAnulado, setIsAnulado] = useState(anulado);
   const [copyType, setCopyType] = useState<CopyType>(
@@ -51,7 +53,8 @@ export function PrintControls({
   const [isProcesado, setIsProcesado] = useState(procesado);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [userNameState, setUserNameState] = useState(userName);
+  const [aprobadoPorState, setAprobadoPorState] = useState(aprobadoPor);
+  const [anuladoPorState, setAnuladoPorState] = useState(anuladoPor);
 
   const printOptions = isAnulado ? ANULADO_OPTIONS : PRINT_OPTIONS;
 
@@ -159,15 +162,25 @@ export function PrintControls({
 
         {children}
 
-        <div className="fixed bottom-0 left-0 right-0 z-50 hidden items-center justify-center gap-2 border-t border-foreground/10 bg-background/80 p-4 sm:flex">
+        <div className="fixed bottom-0 left-0 right-0 z-50 text-center gap-2 border-t border-foreground/10 bg-background/80 p-4">
           <p className="text-sm text-foreground/60">
             <span>Original: Cliente</span>
-            <br />
+          </p>
+
+          <p className="text-sm text-foreground/60">
             <span>Copia: Obligado Tributario Emisor</span>
           </p>
-          <br />
+
           <p className="text-sm text-foreground/60">
-            Documento impreso por: <span className="font-medium">{userNameState}</span>
+            Documento generado por: <span className="font-medium">{aprobadoPorState}</span>
+          </p>
+          {isAnulado && (
+            <p className="text-sm font-medium text-destructive">
+              Documento anulado por <span className="font-medium">{anuladoPorState}</span>
+            </p>
+          )}
+          <p className="text-sm text-foreground/60">
+            Fecha: <span className="font-medium">{new Date().toLocaleDateString()}</span>
           </p>
         </div>
       </div>

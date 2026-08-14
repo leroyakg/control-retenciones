@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { PrintControls } from "./auto-print";
 import type { RetencionDetalleRecord, RetencionRecord } from "@/app/dashboard/retenciones/types";
 import logo from "@/img/logo_lcp_og_crop_no_bckgrd.png"; //
+import { createAdminClient } from "@/lib/supabase/admin";
 // import { CaiRecord } from "@/app/dashboard/cai/types";
 
 const currency = new Intl.NumberFormat("es-HN", {
@@ -45,11 +46,12 @@ const ReciboRetencion = async ({
   const supabase = await createClient();
 
   const { data: claims, error: authError } = await supabase.auth.getClaims();
-  const userName = claims?.claims?.user_metadata?.first_name ?? null;
+  
 
   if (authError || !claims?.claims) {
     redirect("/auth/login");
   }
+
 
   const [retencionRes, detalleRes] = await Promise.all([
     supabase.from("retenciones").select("*").eq("id", id).maybeSingle(),
@@ -76,6 +78,8 @@ const ReciboRetencion = async ({
 
   const retencion = retencionRes.data as RetencionRecord;
   const detalles = (detalleRes.data ?? []) as RetencionDetalleRecord[];
+
+  // const { data: userData, error: userError } = await supabase.auth.admin.getUserById(retencion.aprobado_por ?? userId);
 
   const [caiRes] = await Promise.all([
     supabase
@@ -111,6 +115,16 @@ const ReciboRetencion = async ({
     0,
   );
 
+  const admin = createAdminClient();
+
+  const aprobadoPor = retencion.aprobado_por
+  ? await admin.auth.admin.getUserById(retencion.aprobado_por)
+  : null;
+
+  const anuladoPor = retencion.anulado_por
+  ? await admin.auth.admin.getUserById(retencion.anulado_por)
+  : null;
+
   return (
     <>
       <div className="print:hidden mb-6 flex items-center justify-between">
@@ -126,7 +140,8 @@ const ReciboRetencion = async ({
         retencionId={retencion.id}
         procesado={retencion.procesado}
         anulado={retencion.fecha_anulacion != null}
-        userName={userName ?? "Usuario"}
+        aprobadoPor={aprobadoPor?.data?.user?.user_metadata?.first_name ?? "Usuario"}
+        anuladoPor={anuladoPor?.data?.user?.user_metadata?.first_name ?? "Usuario"}
       >
         <div className="mx-auto flex max-w-2xl flex-col gap-6 rounded-md border border-foreground/10 p-8 print:border-0 print:p-0">
           <header className="flex flex-col items-center gap-2 border-b border-foreground/10 pb-4 text-center">

@@ -46,7 +46,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: `${process.env.VERCEL_URL}/dashboard`,
           data: {
             role: "user",
             first_name: firstName,
